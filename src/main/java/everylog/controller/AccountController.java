@@ -14,4 +14,9 @@ public class AccountController {
         return "account/home";
     }
 
+    @GetMapping("/sign-up")
+    public String signUp() {
+        return "account/sign-up-form";
+    }
+
 }
