@@ -26,18 +26,23 @@
   <p class="text-center">EveryLog</p>
   <h2 class="text-center fs-2 mb-5">계정 만들기</h2>
 
-  <form class="row d-flex flex-column align-items-center" action="#" method="post">
+  <form class="row d-flex flex-column align-items-center"
+        action="#" th:action="@{/sign-up}" method="post" th:object="${signUpForm}">
     <div class="col-md-6 mb-3">
       <label for="username" class="form-label">Username</label>
-      <input type="text" class="form-control" id="username" placeholder="username">
+      <input type="text" class="form-control" id="username" th:field="*{username}">
+      <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</p>
     </div>
     <div class="col-md-6 mb-3">
       <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" placeholder="name@example.com">
+      <input type="email" class="form-control" id="email" th:field="*{email}">
+      <p class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">username error</p>
     </div>
     <div class="col-md-6 mb-3">
       <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password">
+      <input type="password" class="form-control" id="password" th:field="*{password}">
+      <small class="text-muted">길이가 8이상 40이하인 패스워드를 입력해주세요.</small>
+      <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">username error</p>
     </div>
     <div class="col-md-6 mb-3">
       <button type="submit" class="btn btn-dark">계정 만들기</button>
