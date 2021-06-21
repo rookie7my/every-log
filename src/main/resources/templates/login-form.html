@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>EveryLog</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-light bg-light mb-5">
+  <div class="container-lg">
+    <a class="navbar-brand">EveryLog</a>
+    <div>
+      <a href="#" class="btn btn-outline-dark">회원가입</a>
+      <a href="#" class="btn btn-outline-dark">로그인</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container-lg">
+
+  <h2 class="text-center fs-2 mb-5">로그인</h2>
+
+  <form class="row d-flex flex-column align-items-center"
+        action="#" th:action="@{/login}" method="post">
+    <div class="col-md-6 mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" class="form-control" id="username" name="username" placeholder="유저이름/이메일">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="패스워드">
+    </div>
+    <div class="col-md-6 mb-3">
+      <button type="submit" class="btn btn-dark">로그인</button>
+    </div>
+  </form>
+
+</main>
+
+<script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
