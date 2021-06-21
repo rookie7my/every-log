@@ -32,16 +32,14 @@ public class AccountController {
     }
 
     @GetMapping("/sign-up")
-    public String signUp(Model model) {
+    public String signUpForm(Model model) {
         model.addAttribute(new SignUpForm());
         return "account/sign-up-form";
     }
 
     @PostMapping("/sign-up")
     public String processSignUp(@ModelAttribute @Valid SignUpForm signUpForm,
-                                Errors errors
-                                ) {
-
+                                Errors errors) {
         if(errors.hasErrors()) {
             return "account/sign-up-form";
         }
@@ -53,7 +51,6 @@ public class AccountController {
                 .build();
 
         accountRepository.save(account);
-
         return "redirect:/";
     }
 }
