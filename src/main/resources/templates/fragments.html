@@ -1,0 +1,23 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>EveryLog</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+</head>
+
+<nav th:fragment="navbar" class="navbar navbar-light bg-light mb-5">
+  <div class="container-lg">
+    <a class="navbar-brand" th:href="@{/}">EveryLog</a>
+    <div>
+      <a th:href="@{/sign-up}" class="btn btn-outline-dark">회원가입</a>
+      <a th:href="@{/login}" class="btn btn-outline-dark">로그인</a>
+    </div>
+  </div>
+</nav>
+
+</html>
