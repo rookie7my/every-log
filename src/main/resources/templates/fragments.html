@@ -1,5 +1,6 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:fragment="head">
   <meta charset="UTF-8">
@@ -8,15 +9,44 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>EveryLog</title>
   <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/webjars/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/webjars/github-com-dmester-jdenticon/dist/jdenticon.min.js"></script>
 </head>
 
 <nav th:fragment="navbar" class="navbar navbar-light bg-light mb-5">
   <div class="container-lg">
     <a class="navbar-brand" th:href="@{/}">EveryLog</a>
-    <div>
+
+    <div sec:authorize="!isAuthenticated()">
       <a th:href="@{/sign-up}" class="btn btn-outline-dark">회원가입</a>
       <a th:href="@{/login}" class="btn btn-outline-dark">로그인</a>
     </div>
+
+    <div class="d-flex align-items-center" sec:authorize="isAuthenticated()">
+      <div class="px-2"><i class="bi-bell-fill" style="font-size: 20px"></i></div>
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <svg th:data-jdenticon-value="${#authentication.name}" width="32" height="32"></svg>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><span class="dropdown-item-text" th:text="${#authentication.name}">Username</span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <a class="dropdown-item" href="#">계정 관리<i class="bi bi-gear px-2"></i></a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#">글쓰기<i class="bi bi-pencil-fill px-2"></i></a>
+          </li>
+          <li>
+            <form th:action="@{/logout}" method="post">
+              <button class="dropdown-item" type="submit">로그아웃<i class="bi bi-box-arrow-right px-2"></i></button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+
   </div>
 </nav>
 
