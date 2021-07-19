@@ -10,22 +10,31 @@
 
 <main class="container-lg">
 
-  <h2 class="text-center fs-2 mb-5">로그인</h2>
+  <h2 class="text-center fs-2 mb-5" th:text="#{title.login}">로그인</h2>
 
-  <form class="row d-flex flex-column align-items-center"
-        action="#" th:action="@{/login}" method="post">
-    <div class="col-md-6 mb-3">
-      <label for="username" class="form-label">Username</label>
-      <input type="text" class="form-control" id="username" name="username" placeholder="유저이름/이메일">
+  <div class="row justify-content-center">
+    <div class="alert alert-warning col-md-6" role="alert" th:if="${param.error}" th:text="#{message.result.login.fail}">
+      username 혹은 password 가 잘못되었습니다.
     </div>
-    <div class="col-md-6 mb-3">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" name="password" placeholder="패스워드">
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form action="#" th:action="@{/login}" method="post">
+        <div class="mb-3">
+          <label for="username" class="form-label" th:text="#{label.login.username}">Username</label>
+          <input type="text" class="form-control" id="username" name="username" placeholder="유저이름/이메일">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label" th:text="#{label.login.password}">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="패스워드">
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-dark" th:text="#{button.login}">로그인</button>
+        </div>
+      </form>
     </div>
-    <div class="col-md-6 mb-3">
-      <button type="submit" class="btn btn-dark">로그인</button>
-    </div>
-  </form>
+  </div>
 
 </main>
 
