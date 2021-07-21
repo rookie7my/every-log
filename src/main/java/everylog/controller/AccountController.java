@@ -44,11 +44,11 @@ public class AccountController {
             return "account/sign-up-form";
         }
 
-        Account account = Account.builder()
-                .username(signUpForm.getUsername())
-                .email(signUpForm.getEmail())
-                .password(passwordEncoder.encode(signUpForm.getPassword()))
-                .build();
+        Account account = new Account(
+                signUpForm.getUsername(),
+                signUpForm.getEmail(),
+                passwordEncoder.encode(signUpForm.getPassword())
+        );
 
         accountRepository.save(account);
         return "redirect:/";

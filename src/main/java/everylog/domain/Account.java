@@ -24,9 +24,13 @@ public class Account {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    @Builder
+    private String shortIntroduction;
+
+    private String introduction;
+
     public Account(String username, String email, String password) {
         this.username = username;
         this.email = email;

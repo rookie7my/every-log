@@ -17,24 +17,24 @@
     <div class="col-md-6">
       <form action="#" th:action="@{/sign-up}" method="post" th:object="${signUpForm}">
         <div class="mb-3">
-          <label for="username" class="form-label" th:text="#{label.account.username}">Username</label>
+          <label for="username" class="form-label" th:text="#{label.username}">Username</label>
           <input type="text" class="form-control" id="username" th:field="*{username}" aria-describedby="usernameHelp">
           <div id="usernameHelp" class="form-text" th:text="#{help.account.username}"></div>
           <p class="text-danger" th:errors="*{username}">username error</p>
         </div>
         <div class="mb-3">
-          <label for="email" class="form-label" th:text="#{label.account.email}">Email</label>
+          <label for="email" class="form-label" th:text="#{label.email}">Email</label>
           <input type="email" class="form-control" id="email" th:field="*{email}">
           <p class="text-danger" th:errors="*{email}">username error</p>
         </div>
         <div class="mb-3">
-          <label for="password" class="form-label" th:text="#{label.account.password}">Password</label>
+          <label for="password" class="form-label" th:text="#{label.password}">Password</label>
           <input type="password" class="form-control" id="password" th:field="*{password}" aria-describedby="passwordHelp">
           <div id="passwordHelp" class="form-text" th:text="#{help.account.password}"></div>
           <p class="text-danger" th:errors="*{password}">username error</p>
         </div>
         <div class="mb-3">
-          <button type="submit" class="btn btn-dark" th:text="#{button.account.add}">계정 만들기</button>
+          <button type="submit" class="btn btn-dark" th:text="#{button.account.submit}">계정 만들기</button>
         </div>
       </form>
     </div>
