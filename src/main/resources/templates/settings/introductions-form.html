@@ -39,6 +39,9 @@
             <div id="shortIntroductionHelpBlock" class="form-text" th:text="#{help.settings.shortintroduction}">
               100자 이내의 짧은 소개를 작성해 주세요.
             </div>
+            <div th:errors="*{shortIntroduction}" class="form-text text-danger">
+              100자 이내의 짧은 소개를 작성해 주세요.
+            </div>
           </div>
           <button type="submit" class="btn btn-outline-dark" th:text="#{button.submit}">
             제출

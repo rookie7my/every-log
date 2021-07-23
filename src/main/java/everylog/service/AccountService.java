@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +32,10 @@ public class AccountService implements UserDetailsService {
                 .password(account.getPassword())
                 .roles("USER")
                 .build();
+    }
+
+    @Transactional
+    public void updateShortIntroduction(Account account, String shortIntroduction) {
+        account.updateShortIntroduction(shortIntroduction);
     }
 }

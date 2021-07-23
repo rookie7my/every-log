@@ -36,4 +36,8 @@ public class Account {
         this.email = email;
         this.password = password;
     }
+
+    public void updateShortIntroduction(String shortIntroduction) {
+        this.shortIntroduction = shortIntroduction;
+    }
 }
