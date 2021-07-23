@@ -1,5 +1,7 @@
 package everylog.controller;
 
+import everylog.controller.form.SignUpForm;
+import everylog.controller.validator.SignUpFormValidator;
 import everylog.domain.Account;
 import everylog.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
