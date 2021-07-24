@@ -52,4 +52,13 @@ public class SettingsController {
         accountService.updateShortIntroduction(currentAccount, shortIntroductionForm.getShortIntroduction());
         return "redirect:/settings/introductions";
     }
+
+    @PostMapping("/introductions/introduction")
+    public String submitIntroduction(@AuthenticationPrincipal User user,
+                                     @ModelAttribute IntroductionForm introductionForm) {
+        String username = user.getUsername();
+        Account currentAccount = accountRepository.findByUsername(username);
+        accountService.updateIntroduction(currentAccount, introductionForm.getIntroduction());
+        return "redirect:/settings/introductions";
+    }
 }

@@ -38,4 +38,9 @@ public class AccountService implements UserDetailsService {
     public void updateShortIntroduction(Account account, String shortIntroduction) {
         account.updateShortIntroduction(shortIntroduction);
     }
+
+    @Transactional
+    public void updateIntroduction(Account account, String introduction) {
+        account.updateIntroduction(introduction);
+    }
 }

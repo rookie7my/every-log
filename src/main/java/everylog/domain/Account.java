@@ -40,4 +40,8 @@ public class Account {
     public void updateShortIntroduction(String shortIntroduction) {
         this.shortIntroduction = shortIntroduction;
     }
+
+    public void updateIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 }
