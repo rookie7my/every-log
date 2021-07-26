@@ -27,22 +27,20 @@ public class SettingsController {
     private final AccountService accountService;
 
     @GetMapping("/introductions")
-    public String introductionForm(@AuthenticationPrincipal User user, Model model) {
-        String username = user.getUsername();
-        Account currentAccount = accountRepository.findByUsername(username);
+    public String introductionForm(@CurrentAccountId Long currentAccountId, Model model) {
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         model.addAttribute(new ShortIntroductionForm(currentAccount.getShortIntroduction()));
         model.addAttribute(new IntroductionForm(currentAccount.getIntroduction()));
         return "settings/introductions-form";
     }
 
     @PostMapping("/introductions/short-introduction")
-    public String submitShortIntroduction(@AuthenticationPrincipal User user,
+    public String submitShortIntroduction(@CurrentAccountId Long currentAccountId,
                                           @ModelAttribute @Valid ShortIntroductionForm shortIntroductionForm,
                                           BindingResult bindingResult,
                                           Model model) {
 
-        String username = user.getUsername();
-        Account currentAccount = accountRepository.findByUsername(username);
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
 
         if(bindingResult.hasErrors()) {
             model.addAttribute(new IntroductionForm(currentAccount.getIntroduction()));
@@ -54,10 +52,9 @@ public class SettingsController {
     }
 
     @PostMapping("/introductions/introduction")
-    public String submitIntroduction(@AuthenticationPrincipal User user,
+    public String submitIntroduction(@CurrentAccountId Long currentAccountId,
                                      @ModelAttribute IntroductionForm introductionForm) {
-        String username = user.getUsername();
-        Account currentAccount = accountRepository.findByUsername(username);
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         accountService.updateIntroduction(currentAccount, introductionForm.getIntroduction());
         return "redirect:/settings/introductions";
     }

@@ -26,12 +26,7 @@ public class AccountService implements UserDetailsService {
         if(account == null) {
             throw new UsernameNotFoundException(usernameOrEmail);
         }
-
-        return User.builder()
-                .username(account.getUsername())
-                .password(account.getPassword())
-                .roles("USER")
-                .build();
+        return new AccountUserDetails(account);
     }
 
     @Transactional
