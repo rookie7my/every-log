@@ -1,13 +1,12 @@
 package everylog.controller;
 
 import everylog.controller.form.IntroductionForm;
+import everylog.controller.form.PasswordUpdateForm;
 import everylog.controller.form.ShortIntroductionForm;
 import everylog.domain.Account;
 import everylog.repository.AccountRepository;
 import everylog.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,5 +56,12 @@ public class SettingsController {
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         accountService.updateIntroduction(currentAccount, introductionForm.getIntroduction());
         return "redirect:/settings/introductions";
+    }
+
+    @GetMapping("/password")
+    public String passwordUpdateForm(@CurrentAccountId Long currentAccountId, Model model) {
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+        model.addAttribute(new PasswordUpdateForm());
+        return "settings/password-update-form";
     }
 }

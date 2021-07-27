@@ -52,4 +52,20 @@
   </div>
 </nav>
 
+<div class="list-group" th:fragment="settings-bar(page)">
+  <a href="#"
+     class="list-group-item list-group-item-action"
+     th:classappend="(${page}=='introductions')? 'active'"
+     th:href="@{/settings/introductions}"
+     th:text="#{menu.introduction}">
+    소개
+  </a>
+  <a href="#" class="list-group-item list-group-item-action"
+     th:classappend="(${page}=='password')? 'active'"
+     th:href="@{/settings/password}"
+     th:text="#{menu.password}">
+    패스워드
+  </a>
+</div>
+
 </html>

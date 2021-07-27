@@ -19,7 +19,7 @@
         <div class="mb-3">
           <label for="username" class="form-label" th:text="#{label.username}">Username</label>
           <input type="text" class="form-control" id="username" th:field="*{username}" aria-describedby="usernameHelp">
-          <div id="usernameHelp" class="form-text" th:text="#{help.account.username}"></div>
+          <div id="usernameHelp" class="form-text" th:text="#{help.username}"></div>
           <p class="text-danger" th:errors="*{username}">username error</p>
         </div>
         <div class="mb-3">
@@ -30,7 +30,7 @@
         <div class="mb-3">
           <label for="password" class="form-label" th:text="#{label.password}">Password</label>
           <input type="password" class="form-control" id="password" th:field="*{password}" aria-describedby="passwordHelp">
-          <div id="passwordHelp" class="form-text" th:text="#{help.account.password}"></div>
+          <div id="passwordHelp" class="form-text" th:text="#{help.password}"></div>
           <p class="text-danger" th:errors="*{password}">username error</p>
         </div>
         <div class="mb-3">
