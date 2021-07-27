@@ -22,7 +22,7 @@ public class SignUpForm {
     private String email;
 
     @NotBlank
-    @Length(min=8, max=40)
+    @Length(min=8)
     private String password;
 
 }

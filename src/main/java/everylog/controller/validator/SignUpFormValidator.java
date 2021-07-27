@@ -25,11 +25,11 @@ public class SignUpFormValidator implements Validator {
         String email = signUpForm.getEmail();
 
         if(accountRepository.existsByUsername(username)) {
-            errors.rejectValue("username", "wrong.username", "이미 사용중인 username 입니다.");
+            errors.rejectValue("username", "unique");
         }
 
         if(accountRepository.existsByEmail(email)) {
-            errors.rejectValue("email", "wrong.email", "이미 사용중인 email 입니다.");
+            errors.rejectValue("email", "unique");
         }
     }
 }
