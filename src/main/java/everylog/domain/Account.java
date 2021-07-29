@@ -44,4 +44,8 @@ public class Account {
     public void updateIntroduction(String introduction) {
         this.introduction = introduction;
     }
+
+    public void updatePassword(String encodePassword) {
+        this.password = encodePassword;
+    }
 }

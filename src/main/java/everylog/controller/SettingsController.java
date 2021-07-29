@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -59,9 +60,21 @@ public class SettingsController {
     }
 
     @GetMapping("/password")
-    public String passwordUpdateForm(@CurrentAccountId Long currentAccountId, Model model) {
-        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+    public String passwordUpdateForm(Model model) {
         model.addAttribute(new PasswordUpdateForm());
         return "settings/password-update-form";
+    }
+
+    @PostMapping("/password")
+    public String submitPasswordUpdateForm(@CurrentAccountId Long currentAccountId,
+                                           @ModelAttribute @Valid PasswordUpdateForm passwordUpdateForm,
+                                           BindingResult bindingResult,
+                                           RedirectAttributes redirectAttributes) {
+        if(bindingResult.hasErrors()) {
+            return "settings/password-update-form";
+        }
+        accountService.updatePassword(currentAccountId, passwordUpdateForm.getPassword());
+        redirectAttributes.addFlashAttribute("isPasswordUpdated", true);
+        return "redirect:/settings/password";
     }
 }
