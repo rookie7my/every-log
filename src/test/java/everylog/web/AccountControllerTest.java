@@ -1,4 +1,4 @@
-package everylog.controller;
+package everylog.web;
 
 import everylog.domain.Account;
 import everylog.repository.AccountRepository;

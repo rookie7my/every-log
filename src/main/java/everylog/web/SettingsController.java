@@ -1,8 +1,8 @@
-package everylog.controller;
+package everylog.web;
 
-import everylog.controller.form.IntroductionForm;
-import everylog.controller.form.PasswordUpdateForm;
-import everylog.controller.form.ShortIntroductionForm;
+import everylog.web.form.IntroductionForm;
+import everylog.web.form.PasswordUpdateForm;
+import everylog.web.form.ShortIntroductionForm;
 import everylog.domain.Account;
 import everylog.repository.AccountRepository;
 import everylog.service.AccountService;

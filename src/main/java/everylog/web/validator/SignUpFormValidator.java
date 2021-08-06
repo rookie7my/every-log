@@ -1,6 +1,6 @@
-package everylog.controller.validator;
+package everylog.web.validator;
 
-import everylog.controller.form.SignUpForm;
+import everylog.web.form.SignUpForm;
 import everylog.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

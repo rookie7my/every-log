@@ -1,4 +1,4 @@
-package everylog.controller;
+package everylog.web;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

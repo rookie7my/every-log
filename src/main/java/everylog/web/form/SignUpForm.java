@@ -1,4 +1,4 @@
-package everylog.controller.form;
+package everylog.web.form;
 
 import lombok.Getter;
 import lombok.Setter;
