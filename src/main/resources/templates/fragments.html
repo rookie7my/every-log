@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:fragment="head">
+<head th:fragment="head(links)">
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/webjars/bootstrap-icons/font/bootstrap-icons.css">
   <script src="/webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="/webjars/github-com-dmester-jdenticon/dist/jdenticon.min.js"></script>
+  <th:block th:replace="${links}"/>
 </head>
 
 <nav th:fragment="navbar" class="navbar navbar-light bg-light mb-5">

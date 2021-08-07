@@ -36,7 +36,7 @@ dependencies {
     implementation group: 'org.webjars', name: 'bootstrap', version: '5.0.1'
     implementation group: 'org.webjars.bower', name: 'github-com-dmester-jdenticon', version: '2.2.0'
     implementation group: 'org.webjars.npm', name: 'bootstrap-icons', version: '1.5.0'
-
+    implementation 'org.webjars.npm:easymde:2.15.0'
 }
 
 test {

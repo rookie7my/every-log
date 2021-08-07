@@ -2,11 +2,11 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments.html :: head"></head>
+<head th:replace="~{fragments :: head(~{})}"></head>
 
 <body>
 
-<nav th:replace="fragments.html :: navbar"></nav>
+<nav th:replace="~{fragments :: navbar}"></nav>
 
 <main class="container-lg">
 
