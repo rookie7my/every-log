@@ -15,4 +15,5 @@ public class BlogPostForm {
     private String title;
 
     private String content;
+
 }
