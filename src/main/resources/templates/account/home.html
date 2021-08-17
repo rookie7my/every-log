@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="row d-flex justify-content-center mb-5">
+  <div class="row justify-content-center mb-5">
     <div class="card col-lg-8 col-md-10">
       <div class="row g-0">
         <div class="col-lg-4 d-flex justify-content-lg-center align-items-center">
@@ -35,10 +35,10 @@
     </div>
   </div>
 
-  <div class="row d-flex justify-content-center mb-5">
+  <div class="row justify-content-center mb-5">
     <ul class="nav nav-tabs justify-content-center col-lg-8 col-md-10">
       <li class="nav-item">
-        <a class="nav-link text-dark active" aria-current="page" href="#" th:href="@{|/@${homeOwner.username}|}">Posts</a>
+        <a class="nav-link text-dark active" aria-current="page" href="#" th:href="@{/@{username}(username=${homeOwner.username})}">Posts</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-dark" href="#">AboutMe</a>
@@ -46,7 +46,7 @@
     </ul>
   </div>
 
-  <div th:each="blogPost : ${blogPosts}" class="row d-flex justify-content-center mb-5">
+  <div th:each="blogPost : ${blogPostPage.getContent()}" class="row justify-content-center mb-5">
     <div class="card col-lg-8 col-md-10">
       <!--<img src="" class="">-->
       <div class="card-body">
@@ -57,6 +57,31 @@
       </div>
     </div>
   </div>
+
+  <nav aria-label="Blog post page navigation" th:if="${blogPostPage.getTotalPages()} &gt; 0">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${blogPostPage.isFirst()}? 'disabled'">
+        <a th:if="!${blogPostPage.isFirst()}" class="page-link"
+           th:href="@{/@{username}(username=${homeOwner.username}, page=((${blogPostPage.getNumber()} + 1) - 1))}">Previous</a>
+        <span th:if="${blogPostPage.isFirst()}" class="page-link">Previous</span>
+      </li>
+      <th:block th:each="pageNum: ${#numbers.sequence(1, blogPostPage.getTotalPages())}">
+        <li th:if="${pageNum} != ${blogPostPage.getNumber() + 1}" class="page-item">
+          <a class="page-link" href="#"
+             th:href="@{/@{username}(username=${homeOwner.username}, page=${pageNum})}"
+             th:text="${pageNum}">1</a>
+        </li>
+        <li th:if="${pageNum} == ${blogPostPage.getNumber() + 1}" class="page-item active" aria-current="page">
+          <span class="page-link" th:text="${pageNum}">2</span>
+        </li>
+      </th:block>
+      <li class="page-item" th:classappend="${blogPostPage.isLast()}? 'disabled'">
+        <a th:if="!${blogPostPage.isLast()}" class="page-link"
+           th:href="@{/@{username}(username=${homeOwner.username}, page=((${blogPostPage.getNumber()} + 1) + 1))}">Next</a>
+        <span th:if="${blogPostPage.isLast()}" class="page-link">Next</span>
+      </li>
+    </ul>
+  </nav>
 
 </main>
 

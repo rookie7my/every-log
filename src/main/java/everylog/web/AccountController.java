@@ -7,6 +7,9 @@ import everylog.web.validator.SignUpFormValidator;
 import everylog.domain.Account;
 import everylog.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -15,9 +18,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,13 +31,18 @@ public class AccountController {
     private final PasswordEncoder passwordEncoder;
     private final BlogPostRepository blogPostRepository;
 
+    public static final int BLOG_PAGE_SIZE = 3;
+
     @InitBinder("signUpForm")
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);
     }
 
     @GetMapping("/@{username}")
-    public String accountHome(@PathVariable String username, Model model) {
+    public String accountHome(@PathVariable String username, Model model,
+                              @ModelAttribute @Valid RequestedPageNumber requestPageNumber,
+                              RedirectAttributes redirectAttributes) {
+
         Account homeOwner = accountRepository.findByUsername(username);
         if(homeOwner == null) {
             throw new ResponseStatusException(
@@ -43,9 +51,29 @@ public class AccountController {
                     new IllegalArgumentException("An account with given username does not exist.")
             );
         }
-        List<BlogPost> blogPosts = blogPostRepository.findByAccount(homeOwner);
+
+        if(!requestPageNumber.isPageValid()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "exist",
+                    new IllegalArgumentException("A page with given requested page number dose not exist.")
+            );
+        }
+
+        int zeroIndexedPageNumber = requestPageNumber.getZeroIndexedPageNumber();
+        Sort descendingByBlogPostId = Sort.sort(BlogPost.class).by(BlogPost::getId).descending();
+        PageRequest pageRequest = PageRequest.of(zeroIndexedPageNumber, BLOG_PAGE_SIZE, descendingByBlogPostId);
+        Page<BlogPost> blogPostPage = blogPostRepository.findByAccount(homeOwner, pageRequest);
+
+        if(blogPostPage.getTotalPages() != 0 && (zeroIndexedPageNumber >= blogPostPage.getTotalPages())) {
+            int largestOneIndexedPageNum = blogPostPage.getTotalPages();
+            redirectAttributes.addAttribute("username", homeOwner.getUsername());
+            redirectAttributes.addAttribute("page", largestOneIndexedPageNum);
+            return "redirect:/@{username}";
+        }
+
         model.addAttribute("homeOwner", homeOwner);
-        model.addAttribute("blogPosts", blogPosts);
+        model.addAttribute("blogPostPage", blogPostPage);
         return "account/home";
     }
 
