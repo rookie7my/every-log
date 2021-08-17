@@ -21,14 +21,14 @@
     <div class="card col-lg-8 col-md-10">
       <div class="row g-0">
         <div class="col-lg-4 d-flex justify-content-lg-center align-items-center">
-          <svg data-jdenticon-value="user" width="140" height="140"></svg>
+          <svg data-jdenticon-value="user" th:data-jdenticon-value="${homeOwner.username}" width="140" height="140"></svg>
         </div>
         <div class="col-lg-8">
           <div class="card-body">
-            <h5 class="card-title">Username</h5>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem cupiditate eaque hic
-              impedit magnam odit similique sint sunt tenetur velit. Aperiam dolores dolorum eaque et minima molestiae
-              quibusdam repellendus sed?</p>
+            <h5 class="card-title" th:text="${homeOwner.username}">Username</h5>
+            <p class="card-text"
+               th:if="${!#strings.isEmpty(homeOwner.shortIntroduction)}"
+               th:text="${homeOwner.shortIntroduction}"></p>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
   <div class="row d-flex justify-content-center mb-5">
     <ul class="nav nav-tabs justify-content-center col-lg-8 col-md-10">
       <li class="nav-item">
-        <a class="nav-link text-dark active" aria-current="page" href="#">Posts</a>
+        <a class="nav-link text-dark active" aria-current="page" href="#" th:href="@{|/@${homeOwner.username}|}">Posts</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-dark" href="#">AboutMe</a>
@@ -46,43 +46,13 @@
     </ul>
   </div>
 
-  <div class="row d-flex justify-content-center mb-5">
+  <div th:each="blogPost : ${blogPosts}" class="row d-flex justify-content-center mb-5">
     <div class="card col-lg-8 col-md-10">
       <!--<img src="" class="">-->
       <div class="card-body">
-        <a href="#" class="card-title text-decoration-none fs-2 text-dark">Post Title</a>
-        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam architecto asperiores
-          at doloremque error eum impedit, libero modi, nemo nulla obcaecati, odio pariatur quo similique sit soluta
-          veniam veritatis?</p>
-        <small class="text-muted">yyyy년 MM월 dd일</small>
-        <small class="text-muted">5개의 댓글</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="row d-flex justify-content-center mb-5">
-    <div class="card col-lg-8 col-md-10">
-      <!--<img src="" class="">-->
-      <div class="card-body">
-        <a href="#" class="card-title text-decoration-none fs-2 text-dark">Post Title</a>
-        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam architecto asperiores
-          at doloremque error eum impedit, libero modi, nemo nulla obcaecati, odio pariatur quo similique sit soluta
-          veniam veritatis?</p>
-        <small class="text-muted">yyyy년 MM월 dd일</small>
-        <small class="text-muted">5개의 댓글</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="row d-flex justify-content-center mb-5">
-    <div class="card col-lg-8 col-md-10">
-      <!--<img src="" class="">-->
-      <div class="card-body">
-        <a href="#" class="card-title text-decoration-none fs-2 text-dark">Post Title</a>
-        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam architecto asperiores
-          at doloremque error eum impedit, libero modi, nemo nulla obcaecati, odio pariatur quo similique sit soluta
-          veniam veritatis?</p>
-        <small class="text-muted">yyyy년 MM월 dd일</small>
+        <a href="#" class="card-title text-decoration-none fs-2 text-dark" th:text="${blogPost.title}">Post Title</a>
+        <p class="card-text" th:text="${blogPost.content}"></p>
+        <small class="text-muted" th:text="${#temporals.format(blogPost.createdDateTime, 'yyyy년 MM월 dd일')}"></small>
         <small class="text-muted">5개의 댓글</small>
       </div>
     </div>
