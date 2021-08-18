@@ -17,33 +17,46 @@
 
 <nav th:fragment="navbar" class="navbar navbar-light bg-light mb-5">
   <div class="container-lg">
-    <a class="navbar-brand" th:href="@{/}">EveryLog</a>
+    <a class="navbar-brand" th:href="@{/}" th:text="#{appName}">EveryLog</a>
 
     <div sec:authorize="!isAuthenticated()">
-      <a th:href="@{/sign-up}" class="btn btn-outline-dark">회원가입</a>
-      <a th:href="@{/login}" class="btn btn-outline-dark">로그인</a>
+      <a th:href="@{/sign-up}" class="btn btn-outline-dark" th:text="#{button.sign-up}">sign-up</a>
+      <a th:href="@{/login}" class="btn btn-outline-dark" th:text="#{button.login}">log-in</a>
     </div>
 
     <div class="d-flex align-items-center" sec:authorize="isAuthenticated()">
+      <div class="px-2">
+        <a th:href="@{/@{username}(username=${#authentication.name})}"
+           class="text-decoration-none text-dark"
+           th:text="#{button.my-blog-home}">
+          my blog home
+        </a>
+      </div>
       <div class="px-2"><i class="bi-bell-fill" style="font-size: 20px"></i></div>
       <div class="dropdown">
         <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <svg th:data-jdenticon-value="${#authentication.name}" width="32" height="32"></svg>
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
-          <li><span class="dropdown-item-text" th:text="${#authentication.name}">Username</span></li>
+          <li>
+            <span class="dropdown-item-text" th:text="${#authentication.name}">Username</span>
+          </li>
           <li><hr class="dropdown-divider"></li>
           <li>
             <a class="dropdown-item" href="#" th:href="@{/settings/introductions}">
-              계정 관리<i class="bi bi-gear px-2"></i>
+              <span th:text="#{button.settings}">settings</span><i class="bi bi-gear px-2"></i>
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="#" th:href="@{/new}">글쓰기<i class="bi bi-pencil-fill px-2"></i></a>
+            <a class="dropdown-item" href="#" th:href="@{/new}">
+              <span th:text="#{button.writing}">writing</span><i class="bi bi-pencil-fill px-2"></i>
+            </a>
           </li>
           <li>
             <form th:action="@{/logout}" method="post">
-              <button class="dropdown-item" type="submit">로그아웃<i class="bi bi-box-arrow-right px-2"></i></button>
+              <button class="dropdown-item" type="submit">
+                <span th:text="#{button.logout}">logout</span><i class="bi bi-box-arrow-right px-2"></i>
+              </button>
             </form>
           </li>
         </ul>
