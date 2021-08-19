@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head(~{})}"></head>
+
+<body>
+
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<main class="container-lg">
+
+  <div class="row justify-content-center mb-5">
+    <div class="card col-lg-8 col-md-10">
+      <div class="row g-0">
+        <div class="col-lg-4 d-flex justify-content-lg-center align-items-center">
+          <svg data-jdenticon-value="user" th:data-jdenticon-value="${currentAccount.username}" width="140" height="140"></svg>
+        </div>
+        <div class="col-lg-8">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${currentAccount.username}">Username</h5>
+            <p class="card-text"
+               th:if="${!#strings.isEmpty(currentAccount.shortIntroduction)}"
+               th:text="${currentAccount.shortIntroduction}"></p>
+            <p class="text">
+              <a href="#" th:href="@{/settings/short-introduction}"
+                 th:text="${#strings.isEmpty(currentAccount.shortIntroduction)}? #{button.short-introduction} : #{button.update}">update</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8 col-md-10">
+      <div class="row">
+        <div class="col-3">
+          <p><span class="fw-bold" th:text="#{label.username}">username</span></p>
+        </div>
+        <div class="col-7">
+          <p th:text="${currentAccount.username}">username</p>
+        </div>
+        <div class="col-2">
+          <p class="text-end">
+            <a href="#" th:text="#{button.update}">update</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <p>
+          <small class="text-muted" th:text="#{help.settings.username}">message</small>
+        </p>
+      </div>
+
+      <div class="row">
+        <hr>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <p><span class="fw-bold"  th:text="#{label.email}">email</span></p>
+        </div>
+        <div class="col-7">
+          <p th:text="${currentAccount.email}">email</p>
+        </div>
+        <div class="col-2">
+          <p class="text-end">
+            <a href="#" th:text="#{button.update}">update</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <hr>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <p><span class="fw-bold" th:text="#{label.introduction}">introduction</span></p>
+        </div>
+        <div class="col-9">
+          <a class="btn btn-sm btn-outline-dark"
+             th:href="@{/settings/introduction}"
+             th:text="#{button.update}">update</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <hr>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <p><span class="fw-bold" th:text="#{label.password}">password</span></p>
+        </div>
+        <div class="col-9">
+          <a class="btn btn-sm btn-outline-warning"
+             th:href="@{/settings/password}"
+             th:text="#{button.update}">update</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <hr>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <p><span class="fw-bold" th:text="#{label.account.delete}">delete my account</span></p>
+        </div>
+        <div class="col-9">
+          <a class="btn btn-sm btn-outline-danger" th:text="#{button.account.delete}">delete my account</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

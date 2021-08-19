@@ -26,37 +26,47 @@ public class SettingsController {
     private final AccountRepository accountRepository;
     private final AccountService accountService;
 
-    @GetMapping("/introductions")
-    public String introductionForm(@CurrentAccountId Long currentAccountId, Model model) {
+    @GetMapping
+    public String getSettingsHome(@CurrentAccountId Long currentAccountId, Model model) {
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+        model.addAttribute("currentAccount", currentAccount);
+        return "settings/home";
+    }
+
+    @GetMapping("/short-introduction")
+    public String shortIntroductionForm(@CurrentAccountId Long currentAccountId, Model model) {
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         model.addAttribute(new ShortIntroductionForm(currentAccount.getShortIntroduction()));
-        model.addAttribute(new IntroductionForm(currentAccount.getIntroduction()));
-        return "settings/introductions-form";
+        return "settings/short-introduction-form";
     }
 
-    @PostMapping("/introductions/short-introduction")
+    @PostMapping("/short-introduction")
     public String submitShortIntroduction(@CurrentAccountId Long currentAccountId,
                                           @ModelAttribute @Valid ShortIntroductionForm shortIntroductionForm,
-                                          BindingResult bindingResult,
-                                          Model model) {
-
-        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+                                          BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
-            model.addAttribute(new IntroductionForm(currentAccount.getIntroduction()));
-            return "settings/introductions-form";
+            return "settings/short-introduction-form";
         }
 
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         accountService.updateShortIntroduction(currentAccount, shortIntroductionForm.getShortIntroduction());
-        return "redirect:/settings/introductions";
+        return "redirect:/settings";
     }
 
-    @PostMapping("/introductions/introduction")
+    @GetMapping("/introduction")
+    public String introductionForm(@CurrentAccountId Long currentAccountId, Model model) {
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+        model.addAttribute(new IntroductionForm(currentAccount.getIntroduction()));
+        return "settings/introduction-form";
+    }
+
+    @PostMapping("/introduction")
     public String submitIntroduction(@CurrentAccountId Long currentAccountId,
                                      @ModelAttribute IntroductionForm introductionForm) {
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         accountService.updateIntroduction(currentAccount, introductionForm.getIntroduction());
-        return "redirect:/settings/introductions";
+        return "redirect:/settings/introduction";
     }
 
     @GetMapping("/password")

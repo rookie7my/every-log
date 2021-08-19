@@ -14,34 +14,9 @@
 
   <div class="row justify-content-center">
 
-    <div class="col-md-2 mb-4">
-      <div th:replace="~{fragments :: settings-bar(page='introductions')}"></div>
-    </div>
-
     <div class="col-md-8">
 
-      <form th:action="@{/settings/introductions/short-introduction}" method="post"
-            th:object="${shortIntroductionForm}" class="mb-4">
-        <div class="mb-3">
-          <label for="shortIntroduction" class="form-label" th:text="#{label.short-introduction}">
-            짧은 소개
-          </label>
-          <input type="text" class="form-control" id="shortIntroduction"
-                 th:field="*{shortIntroduction}" aria-describedby="shortIntroductionHelpBlock"
-                 th:placeholder="#{help.settings.short-introduction}">
-          <div id="shortIntroductionHelpBlock" class="form-text" th:text="#{help.settings.short-introduction}">
-            100자 이내의 짧은 소개를 작성해 주세요.
-          </div>
-          <div th:errors="*{shortIntroduction}" class="form-text text-danger">
-            100자 이내의 짧은 소개를 작성해 주세요.
-          </div>
-        </div>
-        <button type="submit" class="btn btn-outline-dark" th:text="#{button.submit}">
-          제출
-        </button>
-      </form>
-
-      <form th:action="@{/settings/introductions/introduction}" method="post"
+      <form th:action method="post"
             th:object="${introductionForm}" class="mb-4">
         <div class="mb-3">
           <label for="introduction" class="form-label" th:text="#{label.introduction}">소개</label>
