@@ -50,8 +50,12 @@
     <div class="card col-lg-8 col-md-10">
       <!--<img src="" class="">-->
       <div class="card-body">
-        <a href="#" class="card-title text-decoration-none fs-2 text-dark" th:text="${blogPost.title}">Post Title</a>
-        <p class="card-text" th:text="${blogPost.content}"></p>
+        <h2>
+          <a href="#" th:href="@{/@{username}/{blogPostId}/{blogPostTitle}(username=${homeOwner.username}, blogPostId=${blogPost.id}, blogPostTitle=${blogPost.title})}"
+             class="card-title text-decoration-none fs-2 text-dark"
+             th:text="${blogPost.title}">Post Title</a>
+        </h2>
+<!--        <p class="card-text" th:text="${blogPost.content}"></p>-->
         <small class="text-muted" th:text="${#temporals.format(blogPost.createdDateTime, 'yyyy년 MM월 dd일')}"></small>
         <small class="text-muted">5개의 댓글</small>
       </div>

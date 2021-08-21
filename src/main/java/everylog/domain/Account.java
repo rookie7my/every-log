@@ -48,4 +48,8 @@ public class Account {
     public void updatePassword(String encodePassword) {
         this.password = encodePassword;
     }
+
+    public boolean matchUsername(String username) {
+        return this.username.equals(username);
+    }
 }

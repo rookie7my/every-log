@@ -38,4 +38,8 @@ public class BlogPost {
         this.account = account;
         this.createdDateTime = LocalDateTime.now();
     }
+
+    public boolean matchTitle(String blogPostTitle) {
+        return this.title.equals(blogPostTitle);
+    }
 }
