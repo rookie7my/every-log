@@ -52,7 +52,7 @@ public class BlogPostController {
         return "redirect:/@{username}";
     }
 
-    @GetMapping("/@{username}/{blogPostId}/{blogPostTitle}")
+    @GetMapping("/@{username}/blog-posts/{blogPostId}/{blogPostTitle}")
     public String getBlogPost(@PathVariable String username,
                               @PathVariable Long blogPostId,
                               @PathVariable String blogPostTitle,
