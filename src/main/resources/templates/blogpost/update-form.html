@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head(~{::link})}">
+  <link rel="stylesheet" href="/webjars/easymde/dist/easymde.min.css">
+</head>
+
+<body>
+<main class="container">
+  <div class="row my-3">
+    <p><a class="text-decoration-none text-dark" th:href="@{/}" th:text="#{appName}">EveryLog</a></p>
+    <h2 class="fs-2" th:text="#{title.updateBlogPost}">update</h2>
+  </div>
+
+  <form method="post" th:action th:object="${blogPostUpdateForm}">
+    <div class="mb-3">
+      <label for="title" class="form-label" th:text="#{label.title}">title</label>
+      <input type="text" class="form-control" id="title" aria-describedby="titleHelp" th:field="*{title}">
+      <div id="titleHelp" class="form-text" th:text="#{help.title}"></div>
+      <p class="text-danger form-text" th:errors="*{title}"></p>
+    </div>
+    <div class="mb-3">
+      <label for="content" class="form-label" th:text="#{label.content}">content</label>
+      <div id="contentHelp" class="form-text mb-2" th:text="#{help.content}"></div>
+      <textarea id="content" th:field="*{content}" aria-describedby="contentHelp"></textarea>
+    </div>
+    <button type="submit" class="btn btn-outline-dark" th:text="#{button.submit}">Submit</button>
+  </form>
+</main>
+
+<script src="/webjars/easymde/dist/easymde.min.js"></script>
+<script type="application/javascript">
+    const easyMDE = new EasyMDE({
+        element: document.querySelector('#content')
+    });
+</script>
+</body>
+</html>

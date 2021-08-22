@@ -42,4 +42,8 @@ public class BlogPost {
     public boolean matchTitle(String blogPostTitle) {
         return this.title.equals(blogPostTitle);
     }
+
+    public boolean matchAccount(Account currentAccount) {
+        return this.account.equals(currentAccount);
+    }
 }

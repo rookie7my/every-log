@@ -7,8 +7,10 @@ import everylog.repository.BlogPostRepository;
 import everylog.service.BlogPostCreationDto;
 import everylog.service.BlogPostService;
 import everylog.web.form.BlogPostForm;
+import everylog.web.form.BlogPostUpdateForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,12 +55,14 @@ public class BlogPostController {
     }
 
     @GetMapping("/@{username}/blog-posts/{blogPostId}/{blogPostTitle}")
-    public String getBlogPost(@PathVariable String username,
+    public String getBlogPost(@CurrentAccountId Long currentAccountId,
+                              @PathVariable String username,
                               @PathVariable Long blogPostId,
                               @PathVariable String blogPostTitle,
                               Model model) {
 
         BlogPost blogPost = blogPostRepository.findByIdWithAccount(blogPostId);
+
         if(blogPost == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
@@ -75,7 +79,47 @@ public class BlogPostController {
             );
         }
 
+        boolean isCurrentAccountOwner = false;
+        if(currentAccountId != null) {
+            Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+            isCurrentAccountOwner = blogPost.matchAccount(currentAccount);
+        }
+
         model.addAttribute("blogPost", blogPost);
+        model.addAttribute("isCurrentAccountOwner", isCurrentAccountOwner);
         return "blogpost/detail";
+    }
+
+    @GetMapping("/@{username}/blog-posts/{blogPostId}/edit")
+    public String getBlogPostEditForm(@CurrentAccountId Long currentAccountId,
+                                      @PathVariable String username,
+                                      @PathVariable Long blogPostId,
+                                      Model model) {
+
+        BlogPost blogPost = blogPostRepository.findByIdWithAccount(blogPostId);
+
+        if(blogPost == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "exist",
+                    new IllegalArgumentException("A blogPost with given blogPostId does not exist.")
+            );
+        }
+
+        if(!blogPost.getAccount().matchUsername(username)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "exist",
+                    new IllegalArgumentException("There is no blogPost with given blogPostId, writer name")
+            );
+        }
+
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+        if(!blogPost.matchAccount(currentAccount)) {
+            throw new AccessDeniedException("Only Writer can edit the blog post");
+        }
+
+        model.addAttribute(new BlogPostUpdateForm(blogPost));
+        return "blogpost/update-form";
     }
 }
