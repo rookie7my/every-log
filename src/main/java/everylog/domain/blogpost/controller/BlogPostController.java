@@ -62,32 +62,16 @@ public class BlogPostController {
                               @PathVariable String blogPostTitle,
                               Model model) {
 
-        BlogPost blogPost = blogPostRepository.findByIdWithAccount(blogPostId);
+        BlogPost blogPost = blogPostService.findBlogPost(blogPostId, blogPostTitle, username);
 
-        if(blogPost == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "exist",
-                    new IllegalArgumentException("A blogPost with given blogPostId does not exist.")
-            );
-        }
-
-        if(!blogPost.matchTitle(blogPostTitle) || !blogPost.getAccount().matchUsername(username)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "exist",
-                    new IllegalArgumentException("There is no blogPost with given blogPostId, blogPostTitle, writer name")
-            );
-        }
-
-        boolean isCurrentAccountOwner = false;
+        boolean isCurrentAccountWriter = false;
         if(currentAccountId != null) {
             Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
-            isCurrentAccountOwner = blogPost.matchAccount(currentAccount);
+            isCurrentAccountWriter = blogPost.matchAccount(currentAccount);
         }
 
         model.addAttribute("blogPost", blogPost);
-        model.addAttribute("isCurrentAccountOwner", isCurrentAccountOwner);
+        model.addAttribute("isCurrentAccountWriter", isCurrentAccountWriter);
         return "blogpost/detail";
     }
 
@@ -96,24 +80,7 @@ public class BlogPostController {
                                       @PathVariable String username,
                                       @PathVariable Long blogPostId,
                                       Model model) {
-
-        BlogPost blogPost = blogPostRepository.findByIdWithAccount(blogPostId);
-
-        if(blogPost == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "exist",
-                    new IllegalArgumentException("A blogPost with given blogPostId does not exist.")
-            );
-        }
-
-        if(!blogPost.getAccount().matchUsername(username)) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "exist",
-                    new IllegalArgumentException("There is no blogPost with given blogPostId, writer name")
-            );
-        }
+        BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
 
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         if(!blogPost.matchAccount(currentAccount)) {

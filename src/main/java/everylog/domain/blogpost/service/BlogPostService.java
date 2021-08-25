@@ -3,6 +3,7 @@ package everylog.domain.blogpost.service;
 import everylog.domain.account.domain.Account;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.account.repository.AccountRepository;
+import everylog.domain.blogpost.exception.BlogPostNotFoundException;
 import everylog.domain.blogpost.repository.BlogPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,30 @@ public class BlogPostService {
         BlogPost post = new BlogPost(blogPostCreationDto.getTitle(), blogPostCreationDto.getContent(), writer);
         BlogPost savedPost = blogPostRepository.save(post);
         return savedPost.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public BlogPost findBlogPost(Long blogPostId, String writerName) {
+        BlogPost blogPost = blogPostRepository.findByIdWithAccount(blogPostId);
+
+        if(blogPost == null) {
+            throw new BlogPostNotFoundException("A blogPost with given blogPostId does not exist.");
+        }
+
+        if(!blogPost.getAccount().matchUsername(writerName)) {
+            throw new BlogPostNotFoundException("There is no blogPost with given blogPostId, writerName");
+        }
+
+        return blogPost;
+    }
+
+    @Transactional(readOnly = true)
+    public BlogPost findBlogPost(Long blogPostId, String blogPostTitle, String writerName) {
+        BlogPost blogPost = findBlogPost(blogPostId, writerName);
+
+        if(!blogPost.matchTitle(blogPostTitle)) {
+            throw new BlogPostNotFoundException("There is no blogPost with given blogPostId, blogPostTitle, writerName");
+        }
+        return blogPost;
     }
 }

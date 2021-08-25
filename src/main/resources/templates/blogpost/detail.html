@@ -16,7 +16,7 @@
       <p>
         <div class="d-flex justify-content-between">
           <h1 class="fw-bold" th:text="${blogPost.title}">blog post title</h1>
-          <div sec:authorize="isAuthenticated()" th:if="${isCurrentAccountOwner}">
+          <div sec:authorize="isAuthenticated()" th:if="${isCurrentAccountWriter}">
             <a th:href="@{/@{username}/blog-posts/{blogPostId}/edit(username=${blogPost.account.username}, blogPostId=${blogPost.id})}"
                class="btn btn-sm btn-outline-dark"
                th:text="#{button.update}">update</a>
