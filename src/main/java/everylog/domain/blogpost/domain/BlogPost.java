@@ -29,6 +29,9 @@ public class BlogPost {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
+    @Column(nullable = false)
+    private LocalDateTime updatedDateTime;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
@@ -37,7 +40,7 @@ public class BlogPost {
         this.title = title;
         this.content = content;
         this.account = account;
-        this.createdDateTime = LocalDateTime.now();
+        this.createdDateTime = this.updatedDateTime = LocalDateTime.now();
     }
 
     public boolean matchTitle(String blogPostTitle) {
@@ -46,5 +49,11 @@ public class BlogPost {
 
     public boolean matchAccount(Account currentAccount) {
         return this.account.equals(currentAccount);
+    }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.updatedDateTime = LocalDateTime.now();
     }
 }

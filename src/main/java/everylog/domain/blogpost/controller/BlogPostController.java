@@ -3,14 +3,12 @@ package everylog.domain.blogpost.controller;
 import everylog.domain.account.domain.Account;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.account.repository.AccountRepository;
-import everylog.domain.blogpost.repository.BlogPostRepository;
 import everylog.domain.blogpost.service.BlogPostCreationDto;
 import everylog.domain.blogpost.service.BlogPostService;
 import everylog.domain.account.controller.CurrentAccountId;
 import everylog.domain.blogpost.controller.form.BlogPostForm;
 import everylog.domain.blogpost.controller.form.BlogPostUpdateForm;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -30,7 +27,6 @@ public class BlogPostController {
 
     private final AccountRepository accountRepository;
     private final BlogPostService blogPostService;
-    private final BlogPostRepository blogPostRepository;
 
     @GetMapping("/new")
     public String createBlogPostForm(Model model) {
@@ -89,5 +85,31 @@ public class BlogPostController {
 
         model.addAttribute(new BlogPostUpdateForm(blogPost));
         return "blogpost/update-form";
+    }
+
+    @PostMapping("/@{username}/blog-posts/{blogPostId}/edit")
+    public String updateBlogPost(@CurrentAccountId Long currentAccountId,
+                                 @PathVariable String username, @PathVariable Long blogPostId,
+                                 @ModelAttribute @Valid BlogPostUpdateForm blogPostUpdateForm,
+                                 BindingResult bindingResult,
+                                 RedirectAttributes redirectAttributes) {
+
+        BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
+
+        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
+        if(!blogPost.matchAccount(currentAccount)) {
+            throw new AccessDeniedException("Only Writer can edit the blog post");
+        }
+
+        if(bindingResult.hasErrors()) {
+            return "blogpost/update-form";
+        }
+
+        blogPostService.updateBlogPost(blogPostId, blogPostUpdateForm.getTitle(), blogPostUpdateForm.getContent());
+
+        redirectAttributes.addAttribute("username", username);
+        redirectAttributes.addAttribute("blogPostId", blogPostId);
+        redirectAttributes.addAttribute("blogPostTitle", blogPost.getTitle());
+        return "redirect:/@{username}/blog-posts/{blogPostId}/{blogPostTitle}";
     }
 }

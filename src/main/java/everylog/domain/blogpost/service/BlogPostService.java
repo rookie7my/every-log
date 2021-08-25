@@ -48,4 +48,10 @@ public class BlogPostService {
         }
         return blogPost;
     }
+
+    @Transactional
+    public void updateBlogPost(Long blogPostId, String title, String content) {
+        BlogPost blogPost = blogPostRepository.findById(blogPostId).orElseThrow(BlogPostNotFoundException::new);
+        blogPost.update(title, content);
+    }
 }
