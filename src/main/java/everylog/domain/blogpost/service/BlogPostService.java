@@ -26,13 +26,13 @@ public class BlogPostService {
 
     @Transactional(readOnly = true)
     public BlogPost findBlogPost(Long blogPostId, String writerName) {
-        BlogPost blogPost = blogPostRepository.findByIdWithAccount(blogPostId);
+        BlogPost blogPost = blogPostRepository.findByIdWithWriter(blogPostId);
 
         if(blogPost == null) {
             throw new BlogPostNotFoundException("A blogPost with given blogPostId does not exist.");
         }
 
-        if(!blogPost.getAccount().matchUsername(writerName)) {
+        if(!blogPost.getWriter().matchUsername(writerName)) {
             throw new BlogPostNotFoundException("There is no blogPost with given blogPostId, writerName");
         }
 

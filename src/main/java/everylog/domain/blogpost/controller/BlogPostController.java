@@ -63,7 +63,7 @@ public class BlogPostController {
         boolean isCurrentAccountWriter = false;
         if(currentAccountId != null) {
             Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
-            isCurrentAccountWriter = blogPost.matchAccount(currentAccount);
+            isCurrentAccountWriter = blogPost.matchWriter(currentAccount);
         }
 
         model.addAttribute("blogPost", blogPost);
@@ -79,7 +79,7 @@ public class BlogPostController {
         BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
 
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
-        if(!blogPost.matchAccount(currentAccount)) {
+        if(!blogPost.matchWriter(currentAccount)) {
             throw new AccessDeniedException("Only Writer can edit the blog post");
         }
 
@@ -97,7 +97,7 @@ public class BlogPostController {
         BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
 
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
-        if(!blogPost.matchAccount(currentAccount)) {
+        if(!blogPost.matchWriter(currentAccount)) {
             throw new AccessDeniedException("Only Writer can edit the blog post");
         }
 

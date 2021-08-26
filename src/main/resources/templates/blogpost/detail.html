@@ -17,7 +17,7 @@
         <div class="d-flex justify-content-between">
           <h1 class="fw-bold" th:text="${blogPost.title}">blog post title</h1>
           <div sec:authorize="isAuthenticated()" th:if="${isCurrentAccountWriter}">
-            <a th:href="@{/@{username}/blog-posts/{blogPostId}/edit(username=${blogPost.account.username}, blogPostId=${blogPost.id})}"
+            <a th:href="@{/@{username}/blog-posts/{blogPostId}/edit(username=${blogPost.writer.username}, blogPostId=${blogPost.id})}"
                class="btn btn-sm btn-outline-dark"
                th:text="#{button.update}">update</a>
             <a class="btn btn-sm btn-outline-danger"
@@ -30,7 +30,7 @@
 
   <div class="row justify-content-center">
     <div class="col-8">
-      <p th:text="${blogPost.account.username}">writer</p>
+      <p th:text="${blogPost.writer.username}">writer</p>
     </div>
   </div>
 

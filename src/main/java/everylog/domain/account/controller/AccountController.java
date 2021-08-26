@@ -64,7 +64,7 @@ public class AccountController {
         int zeroIndexedPageNumber = requestPageNumber.getZeroIndexedPageNumber();
         Sort descendingByBlogPostId = Sort.sort(BlogPost.class).by(BlogPost::getId).descending();
         PageRequest pageRequest = PageRequest.of(zeroIndexedPageNumber, BLOG_PAGE_SIZE, descendingByBlogPostId);
-        Page<BlogPost> blogPostPage = blogPostRepository.findByAccount(homeOwner, pageRequest);
+        Page<BlogPost> blogPostPage = blogPostRepository.findByWriter(homeOwner, pageRequest);
 
         if(blogPostPage.getTotalPages() != 0 && (zeroIndexedPageNumber >= blogPostPage.getTotalPages())) {
             int largestOneIndexedPageNum = blogPostPage.getTotalPages();

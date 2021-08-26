@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface BlogPostRepository extends JpaRepository<BlogPost, Long> {
 
-    Page<BlogPost> findByAccount(Account account, Pageable pageable);
+    Page<BlogPost> findByWriter(Account writer, Pageable pageable);
 
-    @Query("select bp from BlogPost bp join fetch bp.account a where bp.id = :id")
-    BlogPost findByIdWithAccount(@Param("id")Long blogPostId);
+    @Query("select bp from BlogPost bp join fetch bp.writer w where bp.id = :id")
+    BlogPost findByIdWithWriter(@Param("id")Long blogPostId);
 }

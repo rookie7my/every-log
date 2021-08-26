@@ -33,13 +33,13 @@ public class BlogPost {
     private LocalDateTime updatedDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "writer_id")
+    private Account writer;
 
-    public BlogPost(String title, String content, Account account) {
+    public BlogPost(String title, String content, Account writer) {
         this.title = title;
         this.content = content;
-        this.account = account;
+        this.writer = writer;
         this.createdDateTime = this.updatedDateTime = LocalDateTime.now();
     }
 
@@ -47,8 +47,8 @@ public class BlogPost {
         return this.title.equals(blogPostTitle);
     }
 
-    public boolean matchAccount(Account currentAccount) {
-        return this.account.equals(currentAccount);
+    public boolean matchWriter(Account writer) {
+        return this.writer.equals(writer);
     }
 
     public void update(String title, String content) {
