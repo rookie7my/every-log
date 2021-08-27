@@ -9,7 +9,6 @@ import everylog.domain.account.controller.CurrentAccountId;
 import everylog.domain.blogpost.controller.form.BlogPostForm;
 import everylog.domain.blogpost.controller.form.BlogPostUpdateForm;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -77,12 +76,6 @@ public class BlogPostController {
                                       @PathVariable Long blogPostId,
                                       Model model) {
         BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
-
-        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
-        if(!blogPost.matchWriter(currentAccount)) {
-            throw new AccessDeniedException("Only Writer can edit the blog post");
-        }
-
         model.addAttribute(new BlogPostUpdateForm(blogPost));
         return "blogpost/update-form";
     }
@@ -93,13 +86,7 @@ public class BlogPostController {
                                  @ModelAttribute @Valid BlogPostUpdateForm blogPostUpdateForm,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
-
         BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
-
-        Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
-        if(!blogPost.matchWriter(currentAccount)) {
-            throw new AccessDeniedException("Only Writer can edit the blog post");
-        }
 
         if(bindingResult.hasErrors()) {
             return "blogpost/update-form";
