@@ -1,4 +1,4 @@
-package everylog.config;
+package everylog.global.config;
 
 import everylog.domain.blogpost.controller.interceptor.BlogPostEditAuthorizationCheckInterceptor;
 import lombok.RequiredArgsConstructor;
