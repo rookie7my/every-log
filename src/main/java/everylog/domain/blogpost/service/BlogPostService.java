@@ -19,7 +19,11 @@ public class BlogPostService {
     @Transactional
     public Long createPost(Long writerId, BlogPostCreationDto blogPostCreationDto) {
         Account writer = accountRepository.findById(writerId).orElseThrow();
-        BlogPost post = new BlogPost(blogPostCreationDto.getTitle(), blogPostCreationDto.getContent(), writer);
+        BlogPost post = new BlogPost(blogPostCreationDto.getTitle()
+                , blogPostCreationDto.getContent()
+                , blogPostCreationDto.getIntroduction()
+                , blogPostCreationDto.isBlogPostPrivate()
+                , writer);
         BlogPost savedPost = blogPostRepository.save(post);
         return savedPost.getId();
     }

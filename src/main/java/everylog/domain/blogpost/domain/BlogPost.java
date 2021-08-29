@@ -27,6 +27,12 @@ public class BlogPost {
     private String content;
 
     @Column(nullable = false)
+    private String introduction;
+
+    @Column(nullable = false)
+    private boolean blogPostPrivate;
+
+    @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
     @Column(nullable = false)
@@ -36,9 +42,11 @@ public class BlogPost {
     @JoinColumn(name = "writer_id")
     private Account writer;
 
-    public BlogPost(String title, String content, Account writer) {
+    public BlogPost(String title, String content, String introduction, boolean blogPostPrivate, Account writer) {
         this.title = title;
         this.content = content;
+        this.introduction = introduction;
+        this.blogPostPrivate = blogPostPrivate;
         this.writer = writer;
         this.createdDateTime = this.updatedDateTime = LocalDateTime.now();
     }

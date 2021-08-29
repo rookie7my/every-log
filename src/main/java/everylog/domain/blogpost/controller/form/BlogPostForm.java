@@ -16,4 +16,9 @@ public class BlogPostForm {
 
     private String content;
 
+    @NotBlank
+    @Length(max = 150)
+    private String introduction;
+
+    private boolean blogPostPrivate;
 }

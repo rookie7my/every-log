@@ -42,7 +42,11 @@ public class BlogPostController {
             return "blogpost/form";
         }
 
-        BlogPostCreationDto blogPostCreationDto = new BlogPostCreationDto(blogPostForm.getTitle(), blogPostForm.getContent());
+        BlogPostCreationDto blogPostCreationDto = new BlogPostCreationDto(blogPostForm.getTitle()
+                , blogPostForm.getContent()
+                , blogPostForm.getIntroduction()
+                , blogPostForm.isBlogPostPrivate());
+
         blogPostService.createPost(currentAccountId, blogPostCreationDto);
         Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
         redirectAttributes.addAttribute("username", currentAccount.getUsername());

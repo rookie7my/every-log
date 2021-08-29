@@ -13,27 +13,124 @@
     <h2 class="fs-2" th:text="#{title.addBlogPost}">글쓰기</h2>
   </div>
 
-  <form method="post" th:action th:object="${blogPostForm}">
-    <div class="mb-3">
-      <label for="title" class="form-label" th:text="#{label.title}">title</label>
-      <input type="text" class="form-control" id="title" aria-describedby="titleHelp" th:field="*{title}">
-      <div id="titleHelp" class="form-text" th:text="#{help.title}"></div>
-      <p class="text-danger form-text" th:errors="*{title}"></p>
+  <form id="blogPostCreationForm" method="post" th:action th:object="${blogPostForm}">
+
+    <div class="form-page" style="display: none">
+      <div class="mb-3">
+        <label for="title" class="form-label" th:text="#{label.title}">title</label>
+        <input type="text" class="form-control" id="title" aria-describedby="titleHelp" th:field="*{title}">
+        <div id="titleHelp" class="form-text" th:text="#{help.title}"></div>
+        <p class="errorMessage text-danger form-text" th:errors="*{title}"></p>
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label" th:text="#{label.content}">content</label>
+        <div id="contentHelp" class="form-text mb-2" th:text="#{help.content}"></div>
+        <textarea id="content" th:field="*{content}" aria-describedby="contentHelp"></textarea>
+      </div>
     </div>
-    <div class="mb-3">
-      <label for="content" class="form-label" th:text="#{label.content}">content</label>
-      <div id="contentHelp" class="form-text mb-2" th:text="#{help.content}"></div>
-      <textarea id="content" th:field="*{content}" aria-describedby="contentHelp"></textarea>
+
+    <div class="form-page" style="display: none">
+      <div class="row mb-3">
+        <div class="col">
+          <label for="introduction" class="form-label" th:text="#{label.introduction}" th:placeholder="#{help.blogPost.introduction}">introduction</label>
+          <div id="introductionHelp" class="form-text" th:text="#{help.blogPost.introduction }"></div>
+          <textarea class="form-control" id="introduction" rows="5" cols="50" style="resize: none" aria-describedby="introductionHelp"
+                    th:field="*{introduction}"></textarea>
+          <p class="errorMessage text-danger form-text" th:errors="*{introduction}"></p>
+        </div>
+        <div class="col">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="blogPostPrivate" th:field="*{blogPostPrivate}" aria-describedby="isPrivateHelp">
+            <label class="form-check-label" for="blogPostPrivate" th:text="#{label.is-private}">is Private</label>
+            <div id="isPrivateHelp" class="form-text" th:text="#{help.blogPost.isPrivate}"></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <button type="submit" class="btn btn-outline-dark" th:text="#{button.submit}">Submit</button>
+
+    <div class="d-flex justify-content-end">
+      <button id="previousButton" type="button" class="btn btn-sm btn-outline-dark" th:text="#{button.previous}">Previous</button>
+      <button id="nextButton" type="button" class="btn btn-sm btn-outline-dark ms-2">Next</button>
+    </div>
+
   </form>
 </main>
 
 <script src="/webjars/easymde/dist/easymde.min.js"></script>
-<script type="application/javascript">
-    const easyMDE = new EasyMDE({
+<script type="application/javascript" th:inline="javascript">
+
+  const $firstErrorMsg = document.querySelector('.errorMessage');
+  const $pages = document.querySelectorAll('.form-page');
+
+  let currentFormPageNum = 0;
+  if($firstErrorMsg !== null) {
+      for(let pn = 0; pn < $pages.length; pn++) {
+          const $page = $pages[pn];
+          if($page.contains($firstErrorMsg)) {
+              currentFormPageNum = pn;
+              break;
+          }
+      }
+  }
+
+  let easyMDE = null;
+  renderFormPage(currentFormPageNum);
+
+  document.querySelector('#nextButton').addEventListener('click', moveToNextPage);
+  document.querySelector('#previousButton').addEventListener('click', moveToPreviousPage);
+
+  function renderFormPage(formPageNum) {
+    const $pages = document.querySelectorAll('.form-page');
+    $pages[currentFormPageNum].style.display = 'block';
+
+    if(formPageNum === 0) {
+      if(easyMDE !== null) {
+          easyMDE.toTextArea();
+          easyMDE = null;
+      }
+      easyMDE = new EasyMDE({
         element: document.querySelector('#content')
-    });
+      });
+    }
+
+    const $previousButton = document.querySelector('#previousButton');
+    if(currentFormPageNum === 0) {
+        $previousButton.style.display = 'none';
+    } else {
+        $previousButton.style.display = 'inline';
+    }
+
+    const $nextButton = document.querySelector('#nextButton');
+    if(currentFormPageNum === ($pages.length - 1)) {
+        $nextButton.innerHTML = /*[[#{button.submit}]]*/ 'Submit';
+    } else {
+        $nextButton.innerHTML = /*[[#{button.next}]]*/ 'Next';
+    }
+  }
+
+  function moveToNextPage() {
+    const $pages = document.querySelectorAll('.form-page');
+
+    if(currentFormPageNum >= $pages.length - 1) {
+        const $form = document.querySelector('#blogPostCreationForm');
+        $form.submit();
+        return;
+    }
+
+    $pages[currentFormPageNum].style.display = 'none';
+    currentFormPageNum++;
+    renderFormPage(currentFormPageNum);
+  }
+
+  function moveToPreviousPage() {
+    const $pages = document.querySelectorAll('.form-page');
+
+    if(currentFormPageNum === 0) return;
+    $pages[currentFormPageNum].style.display = 'none';
+    currentFormPageNum--;
+    renderFormPage(currentFormPageNum);
+  }
 </script>
+
 </body>
 </html>
