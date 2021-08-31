@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head(~{})}"></head>
+
+<body>
+
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<main class="container-lg">
+
+  <div class="row justify-content-center mb-5">
+    <div class="card col-lg-8 col-md-10">
+      <div class="row g-0">
+        <div class="col-lg-4 d-flex justify-content-lg-center align-items-center">
+          <svg data-jdenticon-value="user" th:data-jdenticon-value="${homeOwner.username}" width="140" height="140"></svg>
+        </div>
+        <div class="col-lg-8">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${homeOwner.username}">Username</h5>
+            <p class="card-text"
+               th:if="${!#strings.isEmpty(homeOwner.shortIntroduction)}"
+               th:text="${homeOwner.shortIntroduction}"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="~{fragments :: account-home-menu('about')}"></div>
+
+  <textarea id="introduction" th:text="${homeOwner.introduction}" hidden></textarea>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10" id="target"></div>
+  </div>
+
+</main>
+<script src="/webjars/showdown/dist/showdown.min.js"></script>
+<script type="application/javascript">
+    const text = document.querySelector('#introduction').value;
+    const target = document.querySelector('#target');
+    const converter = new showdown.Converter();
+    const html = converter.makeHtml(text);
+    target.innerHTML = html;
+</script>
+</body>
+</html>

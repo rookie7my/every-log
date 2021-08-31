@@ -1,5 +1,6 @@
 package everylog.domain.account.controller;
 
+import everylog.domain.account.exception.AccountNotFoundException;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.repository.BlogPostRepository;
 import everylog.domain.blogpost.controller.RequestedPageNumber;
@@ -41,7 +42,7 @@ public class AccountController {
 
     @GetMapping("/@{username}")
     public String accountHome(@PathVariable String username, Model model,
-                              @ModelAttribute @Valid RequestedPageNumber requestPageNumber,
+                              @ModelAttribute RequestedPageNumber requestPageNumber,
                               RedirectAttributes redirectAttributes) {
 
         Account homeOwner = accountRepository.findByUsername(username);
@@ -76,6 +77,16 @@ public class AccountController {
         model.addAttribute("homeOwner", homeOwner);
         model.addAttribute("blogPostPage", blogPostPage);
         return "account/home";
+    }
+
+    @GetMapping("/@{username}/about")
+    public String getAccountIntroductionPage(@PathVariable String username, Model model) {
+        Account account = accountRepository.findByUsername(username);
+        if(account == null) {
+            throw new AccountNotFoundException("An account with given username does not exist.");
+        }
+        model.addAttribute("homeOwner", account);
+        return "account/about";
     }
 
     @GetMapping("/sign-up")

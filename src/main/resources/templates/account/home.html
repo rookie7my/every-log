@@ -10,7 +10,7 @@
 
 <main class="container-lg">
 
-  <div class="row justify-content-center mb-5">
+  <div class="row justify-content-center">
     <div th:if="${isNewPostCreated} == true" class="alert alert-success alert-dismissible fade show col-lg-8 col-md-10" role="alert">
       <div th:text="#{message.result.create.blogpost.success}">message</div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -35,16 +35,7 @@
     </div>
   </div>
 
-  <div class="row justify-content-center mb-5">
-    <ul class="nav nav-tabs justify-content-center col-lg-8 col-md-10">
-      <li class="nav-item">
-        <a class="nav-link text-dark active" aria-current="page" href="#" th:href="@{/@{username}(username=${homeOwner.username})}">Posts</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" href="#">AboutMe</a>
-      </li>
-    </ul>
-  </div>
+  <div th:replace="~{fragments :: account-home-menu('posts')}"></div>
 
   <div th:each="blogPost : ${blogPostPage.getContent()}" class="row justify-content-center mb-5">
     <div class="card col-lg-8 col-md-10">

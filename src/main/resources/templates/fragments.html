@@ -66,20 +66,21 @@
   </div>
 </nav>
 
-<div class="list-group" th:fragment="settings-bar(page)">
-  <a href="#"
-     class="list-group-item list-group-item-action"
-     th:classappend="(${page}=='introductions')? 'active'"
-     th:href="@{/settings/introductions}"
-     th:text="#{menu.introduction}">
-    소개
-  </a>
-  <a href="#" class="list-group-item list-group-item-action"
-     th:classappend="(${page}=='password')? 'active'"
-     th:href="@{/settings/password}"
-     th:text="#{menu.password}">
-    패스워드
-  </a>
+<div class="row justify-content-center mb-5" th:fragment="account-home-menu(menu)">
+  <ul class="nav nav-tabs justify-content-center col-lg-8 col-md-10">
+    <li class="nav-item">
+      <a class="nav-link text-dark"
+         th:classappend="${menu}=='posts'? 'active'"
+         href="#"
+         th:href="@{/@{username}(username=${homeOwner.username})}">Posts</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-dark"
+         th:classappend="${menu}=='about'? 'active'"
+         href="#"
+         th:href="@{/@{username}/about(username=${homeOwner.username})}">AboutMe</a>
+    </li>
+  </ul>
 </div>
 
 </html>
