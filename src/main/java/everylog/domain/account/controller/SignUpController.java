@@ -2,13 +2,11 @@ package everylog.domain.account.controller;
 
 import everylog.domain.account.controller.form.SignUpForm;
 import everylog.domain.account.controller.validator.SignUpFormValidator;
-import everylog.domain.account.domain.Account;
-import everylog.domain.account.repository.AccountRepository;
+import everylog.domain.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +14,12 @@ import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
-public class AccountController {
+public class SignUpController {
 
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final SignUpFormValidator signUpFormValidator;
-    private final PasswordEncoder passwordEncoder;
 
-    @InitBinder("signUpForm")
+    @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);
     }
@@ -35,18 +32,11 @@ public class AccountController {
 
     @PostMapping("/sign-up")
     public String processSignUp(@ModelAttribute @Valid SignUpForm signUpForm,
-                                Errors errors) {
-        if(errors.hasErrors()) {
+                                BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
             return "account/sign-up-form";
         }
-
-        Account account = new Account(
-                signUpForm.getUsername(),
-                signUpForm.getEmail(),
-                passwordEncoder.encode(signUpForm.getPassword())
-        );
-
-        accountRepository.save(account);
+        accountService.createAccount(signUpForm.getUsername(), signUpForm.getEmail(), signUpForm.getPassword());
         return "redirect:/";
     }
 }
