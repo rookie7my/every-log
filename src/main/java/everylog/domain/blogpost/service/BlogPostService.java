@@ -6,6 +6,9 @@ import everylog.domain.account.repository.AccountRepository;
 import everylog.domain.blogpost.exception.BlogPostNotFoundException;
 import everylog.domain.blogpost.repository.BlogPostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,8 @@ public class BlogPostService {
 
     private final AccountRepository accountRepository;
     private final BlogPostRepository blogPostRepository;
+
+    public static final int BLOG_PAGE_SIZE = 3;
 
     @Transactional
     public Long createPost(Long writerId, BlogPostCreationDto blogPostCreationDto) {
@@ -57,5 +62,12 @@ public class BlogPostService {
     public void updateBlogPost(Long blogPostId, String title, String content) {
         BlogPost blogPost = blogPostRepository.findById(blogPostId).orElseThrow(BlogPostNotFoundException::new);
         blogPost.update(title, content);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BlogPost> findPageOfPublicBlogPostByWriter(Account writer, int pageNumber) {
+        Sort descendingByBlogPostId = Sort.sort(BlogPost.class).by(BlogPost::getId).descending();
+        PageRequest pageRequest = PageRequest.of(pageNumber, BLOG_PAGE_SIZE, descendingByBlogPostId);
+        return blogPostRepository.findPageOfPublicBlogPostByWriter(writer, pageRequest);
     }
 }
