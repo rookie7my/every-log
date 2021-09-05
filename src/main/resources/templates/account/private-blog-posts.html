@@ -10,16 +10,9 @@
 
 <main class="container-lg">
 
-  <div class="row justify-content-center">
-    <div th:if="${isNewPostCreated} == true" class="alert alert-success alert-dismissible fade show col-lg-8 col-md-10" role="alert">
-      <div th:text="#{message.result.create.blogpost.success}">message</div>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  </div>
-
   <div th:replace="~{fragments :: account-intro-card}"></div>
 
-  <div th:replace="~{fragments :: account-home-menu('public-posts')}"></div>
+  <div th:replace="~{fragments :: account-home-menu('private-posts')}"></div>
 
   <div th:each="blogPost : ${blogPostPage.getContent()}" class="row justify-content-center mb-5">
     <div class="card col-lg-8 col-md-10">
@@ -42,13 +35,13 @@
     <ul class="pagination justify-content-center">
       <li class="page-item" th:classappend="${blogPostPage.isFirst()}? 'disabled'">
         <a th:if="!${blogPostPage.isFirst()}" class="page-link" th:text="#{button.previous}"
-           th:href="@{/@{username}(username=${account.username}, page=((${blogPostPage.getNumber()} + 1) - 1))}">Previous</a>
+           th:href="@{/private-blog-posts(page=((${blogPostPage.getNumber()} + 1) - 1))}">Previous</a>
         <span th:if="${blogPostPage.isFirst()}" class="page-link" th:text="#{button.previous}">Previous</span>
       </li>
       <th:block th:each="pageNum: ${#numbers.sequence(1, blogPostPage.getTotalPages())}">
         <li th:if="${pageNum} != ${blogPostPage.getNumber() + 1}" class="page-item">
           <a class="page-link" href="#"
-             th:href="@{/@{username}(username=${account.username}, page=${pageNum})}"
+             th:href="@{/private-blog-posts(page=${pageNum})}"
              th:text="${pageNum}">1</a>
         </li>
         <li th:if="${pageNum} == ${blogPostPage.getNumber() + 1}" class="page-item active" aria-current="page">
@@ -57,7 +50,7 @@
       </th:block>
       <li class="page-item" th:classappend="${blogPostPage.isLast()}? 'disabled'">
         <a th:if="!${blogPostPage.isLast()}" class="page-link" th:text="#{button.next}"
-           th:href="@{/@{username}(username=${account.username}, page=((${blogPostPage.getNumber()} + 1) + 1))}">Next</a>
+           th:href="@{/private-blog-posts(page=((${blogPostPage.getNumber()} + 1) + 1))}">Next</a>
         <span th:if="${blogPostPage.isLast()}" class="page-link" th:text="#{button.next}">Next</span>
       </li>
     </ul>

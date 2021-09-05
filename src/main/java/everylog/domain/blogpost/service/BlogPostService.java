@@ -65,9 +65,9 @@ public class BlogPostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BlogPost> findPageOfPublicBlogPostByWriter(Account writer, int pageNumber) {
+    public Page<BlogPost> findPageOfBlogPost(Account writer, boolean blogPostPrivate ,int pageNumber) {
         Sort descendingByBlogPostId = Sort.sort(BlogPost.class).by(BlogPost::getId).descending();
         PageRequest pageRequest = PageRequest.of(pageNumber, BLOG_PAGE_SIZE, descendingByBlogPostId);
-        return blogPostRepository.findPageOfPublicBlogPostByWriter(writer, pageRequest);
+        return blogPostRepository.findPageOfBlogPost(writer, blogPostPrivate, pageRequest);
     }
 }

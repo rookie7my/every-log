@@ -1,5 +1,6 @@
 package everylog.global.error;
 
+import everylog.domain.account.exception.AccountNotFoundException;
 import everylog.domain.blogpost.exception.BlogPostNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,13 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(BlogPostNotFoundException.class)
     public String BlogPostNotFoundExHandle(BlogPostNotFoundException e) {
         log.error("BlogPostNotFoundException", e);
+        return "error/404";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(AccountNotFoundException.class)
+    public String AccountNotFoundExHandle(AccountNotFoundException e) {
+        log.error("AccountNotFoundException", e);
         return "error/404";
     }
 }

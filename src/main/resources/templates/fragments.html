@@ -66,19 +66,46 @@
   </div>
 </nav>
 
+<div class="row justify-content-center mb-5" th:fragment="account-intro-card">
+  <div class="card col-lg-8 col-md-10">
+    <div class="row g-0">
+      <div class="col-lg-4 d-flex justify-content-lg-center align-items-center">
+        <svg data-jdenticon-value="user" th:data-jdenticon-value="${account.username}" width="140" height="140"></svg>
+      </div>
+      <div class="col-lg-8">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${account.username}">Username</h5>
+          <p class="card-text"
+             th:if="${!#strings.isEmpty(account.shortIntroduction)}"
+             th:text="${account.shortIntroduction}"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row justify-content-center mb-5" th:fragment="account-home-menu(menu)">
   <ul class="nav nav-tabs justify-content-center col-lg-8 col-md-10">
     <li class="nav-item">
       <a class="nav-link text-dark"
-         th:classappend="${menu}=='posts'? 'active'"
+         th:classappend="${menu}=='public-posts'? 'active'"
          href="#"
-         th:href="@{/@{username}(username=${homeOwner.username})}">Posts</a>
+         th:text="#{button.posts}"
+         th:href="@{/@{username}(username=${account.username})}">Posts</a>
+    </li>
+    <li class="nav-item" sec:authorize="isAuthenticated()" th:if="${isCurrentAccountBlogHomeOwner}">
+      <a class="nav-link text-dark"
+         th:classappend="${menu}=='private-posts'? 'active'"
+         href="#"
+         th:text="#{button.private-posts}"
+         th:href="@{/private-blog-posts}">Private Posts</a>
     </li>
     <li class="nav-item">
       <a class="nav-link text-dark"
          th:classappend="${menu}=='about'? 'active'"
          href="#"
-         th:href="@{/@{username}/about(username=${homeOwner.username})}">AboutMe</a>
+         th:text="#{button.about-me}"
+         th:href="@{/@{username}/about(username=${account.username})}">AboutMe</a>
     </li>
   </ul>
 </div>
