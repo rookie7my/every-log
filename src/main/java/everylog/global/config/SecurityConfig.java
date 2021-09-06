@@ -14,13 +14,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers("/@{username}/blog-posts/{blogPostId}/edit").authenticated()
+                .mvcMatchers("/settings/**"
+                        ,"/private-blog-posts"
+                        ,"/new"
+                        ,"/@{username}/blog-posts/{blogPostId}/edit").authenticated()
                 .mvcMatchers("/"
                         , "/sign-up"
                         , "/@{username}"
                         , "/@{username}/about"
-                        , "/@{username}/blog-posts/{blogPostId}/{blogPostTitle}").permitAll()
-                .anyRequest().authenticated();
+                        , "/@{username}/blog-posts/{blogPostId}/{blogPostTitle}").permitAll();
 
         http.formLogin()
                 .loginPage("/login")
