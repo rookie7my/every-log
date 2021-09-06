@@ -9,6 +9,7 @@ import everylog.domain.account.controller.CurrentAccountId;
 import everylog.domain.blogpost.controller.form.BlogPostForm;
 import everylog.domain.blogpost.controller.form.BlogPostUpdateForm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -67,6 +68,10 @@ public class BlogPostController {
         if(currentAccountId != null) {
             Account currentAccount = accountRepository.findById(currentAccountId).orElseThrow();
             isCurrentAccountWriter = blogPost.matchWriter(currentAccount);
+        }
+
+        if(blogPost.isBlogPostPrivate() && !isCurrentAccountWriter) {
+            throw new AccessDeniedException("only writer can access private blog post.");
         }
 
         model.addAttribute("blogPost", blogPost);
