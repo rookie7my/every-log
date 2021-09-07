@@ -17,7 +17,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/settings/**"
                         ,"/private-blog-posts"
                         ,"/new"
-                        ,"/@{username}/blog-posts/{blogPostId}/edit").authenticated()
+                        ,"/@{username}/blog-posts/{blogPostId}/edit"
+                        ,"/@{username}/blog-posts/{blogPostId}/settings").authenticated()
                 .mvcMatchers("/"
                         , "/sign-up"
                         , "/@{username}"

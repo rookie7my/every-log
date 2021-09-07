@@ -15,6 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(blogPostEditAuthorizationCheckInterceptor)
-                .addPathPatterns("/@{username}/blog-posts/{blogPostId}/edit");
+                .addPathPatterns("/@{username}/blog-posts/{blogPostId}/edit"
+                        ,"/@{username}/blog-posts/{blogPostId}/settings");
     }
 }

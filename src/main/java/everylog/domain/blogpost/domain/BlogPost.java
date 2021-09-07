@@ -64,4 +64,9 @@ public class BlogPost {
         this.content = content;
         this.updatedDateTime = LocalDateTime.now();
     }
+
+    public void updateSettings(String introduction, boolean blogPostPrivate) {
+        this.introduction = introduction;
+        this.blogPostPrivate = blogPostPrivate;
+    }
 }

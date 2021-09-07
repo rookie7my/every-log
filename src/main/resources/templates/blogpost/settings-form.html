@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head(~{})}"></head>
+
+<body>
+<main class="container">
+
+  <div class="row my-3">
+    <p><a class="text-decoration-none text-dark" th:href="@{/}" th:text="#{appName}">EveryLog</a></p>
+    <h2 class="fs-2">
+      <span th:text="#{title.blog-post-settings}">BlogPostSettingsPage</span>
+      /
+      <a class="text-decoration-none text-dark text-muted"
+         th:text="${blogPost.title}"
+         th:href="@{/@{username}/blog-posts/{blogPostId}/{blogPostTitle}(username=${blogPost.writer.username}, blogPostId=${blogPost.id}, blogPostTitle=${blogPost.title})}">
+        BlogPostTitle</a>
+    </h2>
+  </div>
+
+  <form method="post" th:action th:object="${blogPostSettingsForm}">
+
+    <div class="row mb-3">
+      <div class="col">
+        <label for="introduction" class="form-label" th:text="#{label.introduction}" th:placeholder="#{help.blogPost.introduction}">introduction</label>
+        <div id="introductionHelp" class="form-text" th:text="#{help.blogPost.introduction }"></div>
+        <textarea class="form-control" id="introduction" rows="5" cols="50" style="resize: none" aria-describedby="introductionHelp"
+                  th:field="*{introduction}"></textarea>
+        <p class="errorMessage text-danger form-text" th:errors="*{introduction}"></p>
+      </div>
+      <div class="col">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="blogPostPrivate" th:field="*{blogPostPrivate}" aria-describedby="isPrivateHelp">
+          <label class="form-check-label" for="blogPostPrivate" th:text="#{label.is-private}">is Private</label>
+          <div id="isPrivateHelp" class="form-text" th:text="#{help.blogPost.isPrivate}"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+      <button type="submit" class="btn btn-sm btn-outline-dark ms-2" th:text="#{button.submit}">Submit</button>
+    </div>
+
+  </form>
+</main>
+
+</body>
+</html>

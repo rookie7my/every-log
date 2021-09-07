@@ -60,7 +60,8 @@ public class BlogPostService {
 
     @Transactional
     public void updateBlogPost(Long blogPostId, String title, String content) {
-        BlogPost blogPost = blogPostRepository.findById(blogPostId).orElseThrow(BlogPostNotFoundException::new);
+        BlogPost blogPost = blogPostRepository.findById(blogPostId)
+                .orElseThrow(()-> new IllegalArgumentException("blogPostId is not valid."));
         blogPost.update(title, content);
     }
 
@@ -69,5 +70,12 @@ public class BlogPostService {
         Sort descendingByBlogPostId = Sort.sort(BlogPost.class).by(BlogPost::getId).descending();
         PageRequest pageRequest = PageRequest.of(pageNumber, BLOG_PAGE_SIZE, descendingByBlogPostId);
         return blogPostRepository.findPageOfBlogPost(writer, blogPostPrivate, pageRequest);
+    }
+
+    @Transactional
+    public void updateBlogPostSettings(Long blogPostId, String introduction, boolean blogPostPrivate) {
+        BlogPost blogPost = blogPostRepository.findById(blogPostId)
+                .orElseThrow(()-> new IllegalArgumentException("blogPostId is not valid."));
+        blogPost.updateSettings(introduction, blogPostPrivate);
     }
 }

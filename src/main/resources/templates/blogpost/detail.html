@@ -20,6 +20,9 @@
             <a th:href="@{/@{username}/blog-posts/{blogPostId}/edit(username=${blogPost.writer.username}, blogPostId=${blogPost.id})}"
                class="btn btn-sm btn-outline-dark"
                th:text="#{button.update}">update</a>
+            <a th:href="@{/@{username}/blog-posts/{blogPostId}/settings(username=${blogPost.writer.username}, blogPostId=${blogPost.id})}"
+               class="btn btn-sm btn-outline-dark"
+               th:text="#{button.settings}">settings</a>
             <a class="btn btn-sm btn-outline-danger"
                th:text="#{button.delete}">delete</a>
           </div>

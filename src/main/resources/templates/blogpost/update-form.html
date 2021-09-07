@@ -10,7 +10,14 @@
 <main class="container">
   <div class="row my-3">
     <p><a class="text-decoration-none text-dark" th:href="@{/}" th:text="#{appName}">EveryLog</a></p>
-    <h2 class="fs-2" th:text="#{title.updateBlogPost}">update</h2>
+    <h2 class="fs-2">
+      <span class="fs-2" th:text="#{title.updateBlogPost}">update</span>
+      /
+      <a class="text-decoration-none text-dark text-muted"
+         th:text="${blogPost.title}"
+         th:href="@{/@{username}/blog-posts/{blogPostId}/{blogPostTitle}(username=${blogPost.writer.username}, blogPostId=${blogPost.id}, blogPostTitle=${blogPost.title})}">
+        BlogPostTitle</a>
+    </h2>
   </div>
 
   <form method="post" th:action th:object="${blogPostUpdateForm}">
