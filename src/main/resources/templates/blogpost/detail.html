@@ -43,68 +43,99 @@
     </div>
   </div>
 
-  <textarea id="content" th:text="${blogPost.content}" hidden></textarea>
+  <textarea id="blogPostContent" th:text="${blogPost.content}" hidden></textarea>
 
-  <div class="row justify-content-center">
+  <div class="row justify-content-center mb-5">
     <div class="col-lg-8 col-md-10" id="target"></div>
   </div>
 
-  <div class="row justify-content-center">
-    <form class="col-lg-8 col-md-10 mb-3">
-      <div class="mb-3">
-        <label for="comment" class="form-label">Write Comment</label>
-        <textarea class="form-control" id="comment" rows="3" style="resize: none"></textarea>
-      </div>
-      <button type="button" class="btn btn-dark btm-sm">Submit</button>
-    </form>
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8 col-md-10">
+      <textarea id="commentTextArea" class="form-control mb-3" rows="3" style="resize: none" placeholder="write comment..."></textarea>
+      <button id="commentSubmit" type="button" class="btn btn-dark btm-sm">Submit</button>
+    </div>
   </div>
 
-  <div class="row justify-content-center">
+  <div id="commentList" class="row justify-content-center"></div>
 
-    <div class="col-lg-8 col-md-10 mb-3">
-      <div class="d-flex mb-3">
-        <div class="flex-shrink-0 align-self-center">
-          <svg data-jdenticon-value="user" width="36" height="36"></svg>
-        </div>
-        <div class="flex-grow-1 ms-3">
-          <div>username</div>
-          <div class="text-muted">datetime</div>
-        </div>
-      </div>
-      <div>
-        Comment Contents...
-      </div>
-    </div>
+  <template id="template">
 
     <div class="col-lg-8 col-md-10">
       <hr>
     </div>
 
     <div class="col-lg-8 col-md-10 mb-3">
-      <div class="d-flex mb-3">
-        <div class="flex-shrink-0 align-self-center">
-          <svg data-jdenticon-value="user" width="36" height="36"></svg>
-        </div>
-        <div class="flex-grow-1 ms-3">
-          <div>username</div>
-          <div class="text-muted">datetime</div>
-        </div>
-      </div>
-      <div>
-        Comment Contents...
-      </div>
+      <div id="writerName">username</div>
+      <div id="createdDateTime" class="text-muted">datetime</div>
+      <p>
+        <div id="content">Comment Contents...</div>
+      </p>
     </div>
 
-  </div>
+  </template>
 
 </main>
+<script src="/webjars/momentjs/moment.js"></script>
 <script src="/webjars/showdown/dist/showdown.min.js"></script>
 <script type="application/javascript">
-  const text = document.querySelector('#content').value;
+  const text = document.querySelector('#blogPostContent').value;
   const target = document.querySelector('#target');
   const converter = new showdown.Converter();
   const html = converter.makeHtml(text);
   target.innerHTML = html;
 </script>
+<script type="application/javascript" th:inline="javascript">
+  const $commentSubmitButton = document.querySelector('#commentSubmit');
+
+  $commentSubmitButton.addEventListener('click', () => {
+    const $commentTextArea = document.querySelector('#commentTextArea');
+    sendCommentCreationRequest($commentTextArea.value);
+  })
+
+  function sendCommentCreationRequest(content) {
+    const xhr = new XMLHttpRequest();
+    const data = {
+      "blogPostId": /*[[${blogPost.id}]]*/ "1",
+      "content": content
+    }
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState !== XMLHttpRequest.DONE) return;
+
+      if(xhr.status === 200) {
+        resetCommentContentOfTextArea();
+        const comment = JSON.parse(xhr.responseText);
+        addCommentToCommentList(comment);
+        console.log(xhr.responseText);
+      } else {
+        console.error(xhr.responseText);
+      }
+    };
+
+    const csrfToken = /*[[${_csrf.token}]]*/ null;
+    const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+    xhr.open('POST', '/api/comments');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.setRequestHeader(csrfHeader, csrfToken);
+    xhr.send(JSON.stringify(data));
+  }
+
+  function resetCommentContentOfTextArea() {
+    const $commentTextArea = document.querySelector('#commentTextArea');
+    $commentTextArea.value = '';
+  }
+
+  function addCommentToCommentList(comment) {
+    const $commentList = document.querySelector('#commentList');
+    const $template = document.querySelector('#template');
+    const dateTime = moment(comment.createdDateTime).format('YYYY년 MM월 DD일')
+    const $comment = document.importNode($template.content, true);
+    $comment.querySelector('#writerName').innerHTML = comment.writerName;
+    $comment.querySelector('#createdDateTime').innerHTML = dateTime;
+    $comment.querySelector('#content').innerHTML = comment.content;
+    $commentList.appendChild($comment);
+  }
+</script>
+
 </body>
 </html>
