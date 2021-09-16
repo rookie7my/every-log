@@ -51,8 +51,8 @@
 
   <div class="row justify-content-center mb-5">
     <div class="col-lg-8 col-md-10">
-      <textarea id="commentTextArea" class="form-control mb-3" rows="3" style="resize: none" placeholder="write comment..."></textarea>
-      <button id="commentSubmit" type="button" class="btn btn-dark btm-sm">Submit</button>
+      <textarea id="commentTextArea" class="form-control mb-3" rows="3" style="resize: none" th:placeholder="#{help.comment}"></textarea>
+      <button id="commentSubmit" type="button" class="btn btn-dark btm-sm" th:text="#{button.comment.submit}">Submit</button>
     </div>
   </div>
 
@@ -85,26 +85,23 @@
   target.innerHTML = html;
 </script>
 <script type="application/javascript" th:inline="javascript">
-  const $commentSubmitButton = document.querySelector('#commentSubmit');
+  sendCommentsQueryRequest();
 
+  const $commentSubmitButton = document.querySelector('#commentSubmit');
   $commentSubmitButton.addEventListener('click', () => {
     const $commentTextArea = document.querySelector('#commentTextArea');
     sendCommentCreationRequest($commentTextArea.value);
   })
 
-  function sendCommentCreationRequest(content) {
+
+  function sendRequest(data, method, url, onSuccess) {
     const xhr = new XMLHttpRequest();
-    const data = {
-      "blogPostId": /*[[${blogPost.id}]]*/ "1",
-      "content": content
-    }
+
     xhr.onreadystatechange = function() {
       if(xhr.readyState !== XMLHttpRequest.DONE) return;
 
       if(xhr.status === 200) {
-        resetCommentContentOfTextArea();
-        const comment = JSON.parse(xhr.responseText);
-        addCommentToCommentList(comment);
+        onSuccess(xhr);
         console.log(xhr.responseText);
       } else {
         console.error(xhr.responseText);
@@ -113,11 +110,32 @@
 
     const csrfToken = /*[[${_csrf.token}]]*/ null;
     const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
-    xhr.open('POST', '/api/comments');
+    xhr.open(method, url);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.setRequestHeader(csrfHeader, csrfToken);
     xhr.send(JSON.stringify(data));
+  }
+
+  function sendCommentCreationRequest(content) {
+    const data = {
+      "blogPostId": /*[[${blogPost.id}]]*/ "1",
+      "content": content
+    };
+    sendRequest(data, 'POST', '/api/comments', (xhr) => {
+      resetCommentContentOfTextArea();
+      const comment = JSON.parse(xhr.responseText);
+      addCommentToCommentList(comment);
+    });
+  }
+
+  function sendCommentsQueryRequest() {
+    const blogPostId = /*[[${blogPost.id}]]*/ "1";
+    const url = `/api/comments?blogPostId=${blogPostId}`;
+    sendRequest({}, 'GET', url, (xhr) => {
+      const commentQueryResponse = JSON.parse(xhr.responseText);
+      renderCommentList(commentQueryResponse.comments);
+    });
   }
 
   function resetCommentContentOfTextArea() {
@@ -134,6 +152,12 @@
     $comment.querySelector('#createdDateTime').innerHTML = dateTime;
     $comment.querySelector('#content').innerHTML = comment.content;
     $commentList.appendChild($comment);
+  }
+
+  function renderCommentList(comments) {
+    for (const comment of comments) {
+      addCommentToCommentList(comment);
+    }
   }
 </script>
 

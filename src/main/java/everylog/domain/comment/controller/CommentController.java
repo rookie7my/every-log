@@ -6,18 +6,30 @@ import everylog.domain.comment.service.CommentService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
+
+    @GetMapping("/api/comments")
+    public ResponseEntity<CommentsQueryResponseDto> queryComments(
+            @ModelAttribute CommentsQueryRequestDto commentsQueryRequestDto) {
+
+        List<Comment> comments = commentService.findAllByBlogPost(commentsQueryRequestDto.getBlogPostId());
+        List<CommentDto> commentDtos = comments.stream()
+                .map(CommentDto::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new CommentsQueryResponseDto(commentDtos));
+    }
 
     @PostMapping("/api/comments")
     public ResponseEntity<CommentDto> createComment(@CurrentAccountId Long currentAccountId,
@@ -48,6 +60,21 @@ public class CommentController {
             writerName = comment.getWriter().getUsername();
             createdDateTime = comment.getCreatedDateTime();
             content = comment.getContent();
+        }
+    }
+
+    @Getter
+    @Setter
+    private static class CommentsQueryRequestDto {
+        private Long blogPostId;
+    }
+
+    @Getter
+    private static class CommentsQueryResponseDto {
+        private List<CommentDto> comments;
+
+        public CommentsQueryResponseDto(List<CommentDto> comments) {
+            this.comments = comments;
         }
     }
 }

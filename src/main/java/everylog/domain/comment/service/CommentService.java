@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -35,5 +37,10 @@ public class CommentService {
     public Comment findById(Long id) {
         return commentRepository.findByIdWithWriter(id)
                 .orElseThrow(() -> new IllegalArgumentException("id is not valid"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Comment> findAllByBlogPost(Long blogPostId) {
+        return commentRepository.findAllByBlogPost(blogPostId);
     }
 }
