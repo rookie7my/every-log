@@ -19,16 +19,16 @@
       <form th:action method="post"
             th:object="${introductionForm}" class="mb-4">
         <div class="mb-3">
-          <label for="introduction" class="form-label" th:text="#{label.introduction}">소개</label>
+          <label for="introduction" class="form-label" th:text="#{label.introduction}">introduction</label>
           <textarea class="form-control" id="introduction" rows="3" th:field="*{introduction}"
                     aria-describedby="introductionHelpBlock" th:placeholder="#{help.settings.introduction}">
           </textarea>
           <div id="introductionHelpBlock" class="form-text" th:text="#{help.settings.introduction}">
-            소개를 작성해 주세요.
+            please introduce yourself
           </div>
         </div>
         <button type="submit" class="btn btn-outline-dark" th:text="#{button.submit}">
-          제출
+          Submit
         </button>
       </form>
 

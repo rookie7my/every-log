@@ -12,7 +12,7 @@
 
   <div class="row justify-content-center">
     <div th:if="${isNewPostCreated} == true" class="alert alert-success alert-dismissible fade show col-lg-8 col-md-10" role="alert">
-      <div th:text="#{message.result.create.blogpost.success}">message</div>
+      <div th:text="#{message.result.create.blogPost.success}">message</div>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   </div>
@@ -33,7 +33,7 @@
         </h2>
         <p class="card-text" th:text="${blogPost.introduction}"></p>
         <small class="text-muted" th:text="${#temporals.format(blogPost.createdDateTime, 'yyyy년 MM월 dd일')}"></small>
-        <small class="text-muted">5개의 댓글</small>
+        <small class="text-muted">5 comments</small>
       </div>
     </div>
   </div>

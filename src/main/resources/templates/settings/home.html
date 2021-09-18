@@ -24,7 +24,7 @@
                th:text="${currentAccount.shortIntroduction}"></p>
             <p class="text">
               <a href="#" th:href="@{/settings/short-introduction}"
-                 th:text="${#strings.isEmpty(currentAccount.shortIntroduction)}? #{button.short-introduction} : #{button.update}">update</a>
+                 th:text="${#strings.isEmpty(currentAccount.shortIntroduction)}? #{button.shortIntroduction} : #{button.update}">update</a>
             </p>
           </div>
         </div>

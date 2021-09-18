@@ -10,8 +10,8 @@
 
 <main class="container-lg">
 
-  <p class="text-center">EveryLog</p>
-  <h2 class="text-center fs-2 mb-5" th:text="#{title.addAccount}">계정 만들기</h2>
+  <p class="text-center" th:text="#{appName}">EveryLog</p>
+  <h2 class="text-center fs-2 mb-5" th:text="#{title.createAccount}">Create Account</h2>
 
   <div class="row justify-content-center">
     <div class="col-md-6">
@@ -25,16 +25,16 @@
         <div class="mb-3">
           <label for="email" class="form-label" th:text="#{label.email}">Email</label>
           <input type="email" class="form-control" id="email" th:field="*{email}">
-          <p class="text-danger" th:errors="*{email}">username error</p>
+          <p class="text-danger" th:errors="*{email}">email error</p>
         </div>
         <div class="mb-3">
           <label for="password" class="form-label" th:text="#{label.password}">Password</label>
           <input type="password" class="form-control" id="password" th:field="*{password}" aria-describedby="passwordHelp">
           <div id="passwordHelp" class="form-text" th:text="#{help.password}"></div>
-          <p class="text-danger" th:errors="*{password}">username error</p>
+          <p class="text-danger" th:errors="*{password}">password error</p>
         </div>
         <div class="mb-3">
-          <button type="submit" class="btn btn-dark" th:text="#{button.account.submit}">계정 만들기</button>
+          <button type="submit" class="btn btn-dark" th:text="#{button.account.submit}">Create Account</button>
         </div>
       </form>
     </div>

@@ -20,7 +20,7 @@
     <a class="navbar-brand" th:href="@{/}" th:text="#{appName}">EveryLog</a>
 
     <div sec:authorize="!isAuthenticated()">
-      <a th:href="@{/sign-up}" class="btn btn-outline-dark" th:text="#{button.sign-up}">sign-up</a>
+      <a th:href="@{/sign-up}" class="btn btn-outline-dark" th:text="#{button.signUp}">sign-up</a>
       <a th:href="@{/login}" class="btn btn-outline-dark" th:text="#{button.login}">log-in</a>
     </div>
 
@@ -28,7 +28,7 @@
       <div class="px-2">
         <a th:href="@{/@{username}(username=${#authentication.name})}"
            class="text-decoration-none text-dark"
-           th:text="#{button.my-blog-home}">
+           th:text="#{button.myBlogHome}">
           my blog home
         </a>
       </div>
@@ -97,14 +97,14 @@
       <a class="nav-link text-dark"
          th:classappend="${menu}=='private-posts'? 'active'"
          href="#"
-         th:text="#{button.private-posts}"
+         th:text="#{button.privatePosts}"
          th:href="@{/private-blog-posts}">Private Posts</a>
     </li>
     <li class="nav-item">
       <a class="nav-link text-dark"
          th:classappend="${menu}=='about'? 'active'"
          href="#"
-         th:text="#{button.about-me}"
+         th:text="#{button.aboutMe}"
          th:href="@{/@{username}/about(username=${account.username})}">AboutMe</a>
     </li>
   </ul>
