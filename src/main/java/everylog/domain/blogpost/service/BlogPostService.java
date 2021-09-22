@@ -5,6 +5,7 @@ import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.account.repository.AccountRepository;
 import everylog.domain.blogpost.exception.BlogPostNotFoundException;
 import everylog.domain.blogpost.repository.BlogPostRepository;
+import everylog.global.error.exception.ErrorResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,11 +39,11 @@ public class BlogPostService {
         BlogPost blogPost = blogPostRepository.findByIdWithWriter(blogPostId);
 
         if(blogPost == null) {
-            throw new BlogPostNotFoundException("A blogPost with given blogPostId does not exist.");
+            throw new BlogPostNotFoundException(ErrorResult.BLOG_POST_NOT_FOUND);
         }
 
         if(!blogPost.getWriter().matchUsername(writerName)) {
-            throw new BlogPostNotFoundException("There is no blogPost with given blogPostId, writerName");
+            throw new BlogPostNotFoundException(ErrorResult.BLOG_POST_NOT_FOUND);
         }
 
         return blogPost;
@@ -53,7 +54,7 @@ public class BlogPostService {
         BlogPost blogPost = findBlogPost(blogPostId, writerName);
 
         if(!blogPost.matchTitle(blogPostTitle)) {
-            throw new BlogPostNotFoundException("There is no blogPost with given blogPostId, blogPostTitle, writerName");
+            throw new BlogPostNotFoundException(ErrorResult.BLOG_POST_NOT_FOUND);
         }
         return blogPost;
     }

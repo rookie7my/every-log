@@ -1,23 +1,10 @@
 package everylog.domain.blogpost.exception;
 
-public class BlogPostNotFoundException extends RuntimeException {
-    public BlogPostNotFoundException() {
-        super();
-    }
+import everylog.global.error.exception.BusinessException;
+import everylog.global.error.exception.ErrorResult;
 
-    public BlogPostNotFoundException(String message) {
-        super(message);
-    }
-
-    public BlogPostNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public BlogPostNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    protected BlogPostNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+public class BlogPostNotFoundException extends BusinessException {
+    public BlogPostNotFoundException(ErrorResult errorResult) {
+        super(errorResult);
     }
 }

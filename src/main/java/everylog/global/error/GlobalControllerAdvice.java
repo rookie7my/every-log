@@ -16,7 +16,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BlogPostNotFoundException.class)
     public String BlogPostNotFoundExHandle(BlogPostNotFoundException e) {
-        log.error("BlogPostNotFoundException", e);
+        log.error("BlogPostNotFoundException: {}", e.getErrorResult().getMessage());
         return "error/404";
     }
 
