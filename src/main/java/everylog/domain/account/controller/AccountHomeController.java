@@ -6,6 +6,7 @@ import everylog.domain.account.repository.AccountRepository;
 import everylog.domain.blogpost.controller.RequestedPageNumber;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.service.BlogPostService;
+import everylog.global.error.exception.ErrorResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -30,7 +31,7 @@ public class AccountHomeController {
 
         Account blogHomeOwner = accountRepository.findByUsername(username);
         if(blogHomeOwner == null) {
-            throw new AccountNotFoundException("An account with given username does not exist.");
+            throw new AccountNotFoundException(ErrorResult.ACCOUNT_NOT_FOUND);
         }
 
         if(!requestedPageNumber.isPageValid()) {
@@ -67,7 +68,7 @@ public class AccountHomeController {
 
         Account blogHomeOwner = accountRepository.findByUsername(username);
         if(blogHomeOwner == null) {
-            throw new AccountNotFoundException("An account with given username does not exist.");
+            throw new AccountNotFoundException(ErrorResult.ACCOUNT_NOT_FOUND);
         }
 
         boolean isCurrentAccountBlogHomeOwner = false;
