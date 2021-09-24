@@ -8,10 +8,14 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorResult {
 
-    INVALID_COMMENT_WRITER_ID_INPUT(HttpStatus.BAD_REQUEST, "writerId to create comment is invalid"),
-    INVALID_COMMENT_BLOG_POST_ID_INPUT(HttpStatus.BAD_REQUEST, "blogPostId to create comment is invalid"),
+    INVALID_WRITER_ID_FOR_COMMENT_CREATION(HttpStatus.BAD_REQUEST,
+            "when creating comment, writer with given writerId does not exist"),
+    INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION(HttpStatus.BAD_REQUEST,
+            "when creating comment, blogPost with given blogPostId does not exist"),
+
 
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "Requested account can not be found"),
+
 
     BLOG_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Requested blogPost can not be found");
 

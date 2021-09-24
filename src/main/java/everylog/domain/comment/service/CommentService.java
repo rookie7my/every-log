@@ -5,8 +5,7 @@ import everylog.domain.account.repository.AccountRepository;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.repository.BlogPostRepository;
 import everylog.domain.comment.domain.Comment;
-import everylog.domain.comment.exception.InvalidCommentBlogPostIdInputException;
-import everylog.domain.comment.exception.InvalidCommentWriterIdInputException;
+import everylog.domain.comment.exception.InvalidArgumentCommentCreationException;
 import everylog.domain.comment.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static everylog.global.error.exception.ErrorResult.*;
+import static everylog.global.error.exception.ErrorResult.INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION;
+import static everylog.global.error.exception.ErrorResult.INVALID_WRITER_ID_FOR_COMMENT_CREATION;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +27,10 @@ public class CommentService {
     @Transactional
     public Long createComment(Long writerId, Long blogPostId, String content) {
         Account writer = accountRepository.findById(writerId)
-                .orElseThrow(() -> new InvalidCommentWriterIdInputException(INVALID_COMMENT_WRITER_ID_INPUT));
+                .orElseThrow(() -> new InvalidArgumentCommentCreationException(INVALID_WRITER_ID_FOR_COMMENT_CREATION));
 
         BlogPost blogPost = blogPostRepository.findById(blogPostId)
-                .orElseThrow(() -> new InvalidCommentBlogPostIdInputException(INVALID_COMMENT_BLOG_POST_ID_INPUT));
+                .orElseThrow(() -> new InvalidArgumentCommentCreationException(INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION));
 
         Comment comment = new Comment(content, writer, blogPost);
         return commentRepository.save(comment).getId();

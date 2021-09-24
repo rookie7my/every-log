@@ -5,8 +5,7 @@ import everylog.domain.account.repository.AccountRepository;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.repository.BlogPostRepository;
 import everylog.domain.comment.domain.Comment;
-import everylog.domain.comment.exception.InvalidCommentBlogPostIdInputException;
-import everylog.domain.comment.exception.InvalidCommentWriterIdInputException;
+import everylog.domain.comment.exception.InvalidArgumentCommentCreationException;
 import everylog.domain.comment.repository.CommentRepository;
 import everylog.global.error.exception.ErrorResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
@@ -100,11 +101,12 @@ class CommentServiceTest {
                 .findById(invalidBlogPostId);
 
         // when
-        assertThatThrownBy(() -> target.createComment(writerId, invalidBlogPostId, content))
-                .isInstanceOf(InvalidCommentBlogPostIdInputException.class)
-                .hasFieldOrPropertyWithValue("errorResult", ErrorResult.INVALID_COMMENT_BLOG_POST_ID_INPUT);
+        InvalidArgumentCommentCreationException result = catchThrowableOfType(
+                () -> target.createComment(writerId, invalidBlogPostId, content),
+                InvalidArgumentCommentCreationException.class);
 
         // then
+        assertThat(result.getErrorResult()).isEqualTo(ErrorResult.INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION);
     }
 
     @DisplayName("댓글 생성 실패: writerId에 해당하는 Account 없음")
@@ -117,10 +119,11 @@ class CommentServiceTest {
                 .findById(inValidWriterId);
 
         // when
-        assertThatThrownBy(() -> target.createComment(inValidWriterId, blogPostId, content))
-                .isInstanceOf(InvalidCommentWriterIdInputException.class)
-                .hasFieldOrPropertyWithValue("errorResult", ErrorResult.INVALID_COMMENT_WRITER_ID_INPUT);
+        InvalidArgumentCommentCreationException result = catchThrowableOfType(
+                () -> target.createComment(inValidWriterId, blogPostId, content),
+                InvalidArgumentCommentCreationException.class);
 
         // then
+        assertThat(result.getErrorResult()).isEqualTo(ErrorResult.INVALID_WRITER_ID_FOR_COMMENT_CREATION);
     }
 }
