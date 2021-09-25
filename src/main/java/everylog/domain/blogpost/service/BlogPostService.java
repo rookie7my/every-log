@@ -1,8 +1,9 @@
 package everylog.domain.blogpost.service;
 
 import everylog.domain.account.domain.Account;
-import everylog.domain.blogpost.domain.BlogPost;
+import everylog.domain.account.exception.AccountNotFoundException;
 import everylog.domain.account.repository.AccountRepository;
+import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.exception.BlogPostNotFoundException;
 import everylog.domain.blogpost.repository.BlogPostRepository;
 import everylog.global.error.exception.ErrorResult;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,19 @@ public class BlogPostService {
 
         if(!blogPost.matchTitle(blogPostTitle)) {
             throw new BlogPostNotFoundException(ErrorResult.BLOG_POST_NOT_FOUND);
+        }
+        return blogPost;
+    }
+
+    @Transactional(readOnly = true)
+    public BlogPost findBlogPostForUpdate(Long blogPostId, String username, Long currentAccountId) {
+        BlogPost blogPost = findBlogPost(blogPostId, username);
+
+        Account currentAccount = accountRepository.findById(currentAccountId)
+                .orElseThrow(() -> new AccountNotFoundException(ErrorResult.INVALID_CURRENT_ACCOUNT_ID));
+
+        if(!blogPost.matchWriter(currentAccount)) {
+            throw new AccessDeniedException("Only writer can update blogPost");
         }
         return blogPost;
     }

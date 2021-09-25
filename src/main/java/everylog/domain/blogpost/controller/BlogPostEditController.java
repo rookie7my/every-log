@@ -1,5 +1,6 @@
 package everylog.domain.blogpost.controller;
 
+import everylog.domain.account.controller.CurrentAccountId;
 import everylog.domain.blogpost.controller.form.BlogPostUpdateForm;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.service.BlogPostService;
@@ -22,20 +23,22 @@ public class BlogPostEditController {
     private final BlogPostService blogPostService;
 
     @GetMapping("/@{username}/blog-posts/{blogPostId}/edit")
-    public String getBlogPostEditForm(@PathVariable String username, @PathVariable Long blogPostId, Model model) {
-        BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
+    public String getBlogPostEditForm(@CurrentAccountId Long currentAccountId, @PathVariable String username,
+                                      @PathVariable Long blogPostId, Model model) {
+        BlogPost blogPost = blogPostService.findBlogPostForUpdate(blogPostId, username, currentAccountId);
         model.addAttribute(blogPost);
         model.addAttribute(new BlogPostUpdateForm(blogPost));
         return "blogpost/update-form";
     }
 
     @PostMapping("/@{username}/blog-posts/{blogPostId}/edit")
-    public String updateBlogPost(@PathVariable String username, @PathVariable Long blogPostId, Model model,
+    public String updateBlogPost(@CurrentAccountId Long currentAccountId, @PathVariable String username,
+                                 @PathVariable Long blogPostId, Model model,
                                  @ModelAttribute @Valid BlogPostUpdateForm blogPostUpdateForm,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes) {
-        BlogPost blogPost = blogPostService.findBlogPost(blogPostId, username);
 
+        BlogPost blogPost = blogPostService.findBlogPostForUpdate(blogPostId, username, currentAccountId);
         if(bindingResult.hasErrors()) {
             model.addAttribute(blogPost);
             return "blogpost/update-form";
