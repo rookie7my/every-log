@@ -1,0 +1,27 @@
+package everylog.global.security;
+
+import everylog.domain.account.domain.Account;
+import everylog.domain.account.service.AccountUserDetails;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithSecurityContextFactory;
+import org.springframework.test.util.ReflectionTestUtils;
+
+public class WithMockAccountUserDetailsSecurityContextFactory
+        implements WithSecurityContextFactory<WithMockAccountUserDetails> {
+
+    @Override
+    public SecurityContext createSecurityContext(WithMockAccountUserDetails withMockAccountUserDetails) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+
+        Account account = new Account("test-user", "test@test.com", "12345678");
+        ReflectionTestUtils.setField(account, "id", withMockAccountUserDetails.id());
+        AccountUserDetails principal = new AccountUserDetails(account);
+
+        UsernamePasswordAuthenticationToken authentication
+                = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        context.setAuthentication(authentication);
+        return context;
+    }
+}

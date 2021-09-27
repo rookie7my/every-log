@@ -3,16 +3,16 @@ package everylog.domain.comment.controller;
 import everylog.domain.account.controller.CurrentAccountId;
 import everylog.domain.comment.domain.Comment;
 import everylog.domain.comment.service.CommentService;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,61 +20,20 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @GetMapping("/api/comments")
-    public ResponseEntity<CommentsQueryResponseDto> queryComments(
-            @ModelAttribute CommentsQueryRequestDto commentsQueryRequestDto) {
-
-        List<Comment> comments = commentService.findAllByBlogPost(commentsQueryRequestDto.getBlogPostId());
-        List<CommentDto> commentDtos = comments.stream()
-                .map(CommentDto::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new CommentsQueryResponseDto(commentDtos));
-    }
-
     @PostMapping("/api/comments")
-    public ResponseEntity<CommentDto> createComment(@CurrentAccountId Long currentAccountId,
-                                                    @RequestBody CommentCreationRequestDto commentCreationRequestDto) {
-        Long createdCommentId = commentService.createComment(currentAccountId,
-                                                             commentCreationRequestDto.getBlogPostId(),
-                                                             commentCreationRequestDto.getContent());
-        Comment comment = commentService.findById(createdCommentId);
-        return ResponseEntity.ok(new CommentDto(comment));
-    }
-
-    @Getter
-    @NoArgsConstructor
-    private static class CommentCreationRequestDto {
-        private Long blogPostId;
-        private String content;
-    }
-
-    @Getter
-    private static class CommentDto {
-        private Long id;
-        private String writerName;
-        private LocalDateTime createdDateTime;
-        private String content;
-
-        CommentDto(Comment comment) {
-            id = comment.getId();
-            writerName = comment.getWriter().getUsername();
-            createdDateTime = comment.getCreatedDateTime();
-            content = comment.getContent();
+    public ResponseEntity<CommentCreationResponseDto> createComment(@CurrentAccountId Long currentAccountId,
+                                              @RequestBody @Valid CommentCreationRequestDto commentCreationRequestDto) {
+        if(currentAccountId == null) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/login"));
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
         }
-    }
 
-    @Getter
-    @Setter
-    private static class CommentsQueryRequestDto {
-        private Long blogPostId;
-    }
-
-    @Getter
-    private static class CommentsQueryResponseDto {
-        private List<CommentDto> comments;
-
-        public CommentsQueryResponseDto(List<CommentDto> comments) {
-            this.comments = comments;
-        }
+        Long savedCommentId = commentService.createComment(currentAccountId,
+                commentCreationRequestDto.getBlogPostId(),
+                commentCreationRequestDto.getContent());
+        Comment savedComment = commentService.findById(savedCommentId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new CommentCreationResponseDto(savedComment));
     }
 }
