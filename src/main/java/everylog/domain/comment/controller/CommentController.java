@@ -29,11 +29,10 @@ public class CommentController {
             return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
         }
 
-        Long savedCommentId = commentService.createComment(currentAccountId,
+        Comment createdComment = commentService.createComment(currentAccountId,
                 commentCreationRequestDto.getBlogPostId(),
                 commentCreationRequestDto.getContent());
-        Comment savedComment = commentService.findById(savedCommentId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new CommentCreationResponseDto(savedComment));
+                .body(new CommentCreationResponseDto(createdComment));
     }
 }

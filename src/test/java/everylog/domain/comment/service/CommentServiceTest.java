@@ -39,14 +39,14 @@ class CommentServiceTest {
     @Mock
     CommentRepository commentRepository;
 
-    Long writerId;
+    Long commentWriterId;
     Long blogPostId;
     String content;
 
     @BeforeEach
     void init() {
-        writerId = -1L;
-        blogPostId = -1L;
+        commentWriterId = 1L;
+        blogPostId = 1L;
         content = "test content";
     }
 
@@ -54,19 +54,23 @@ class CommentServiceTest {
     @Test
     void CommentCreationSuccess() {
         // given
-        Account writer = new Account("writerName", "writer@writer.com", "1234");
-        ReflectionTestUtils.setField(writer, "id", writerId);
+        Account commentWriter = new Account("commentWriter", "commentWriter@test.com", "12345678");
+        ReflectionTestUtils.setField(commentWriter, "id", commentWriterId);
 
-        BlogPost blogPost = new BlogPost("testPost", "testContent", "introduction", false, null);
+        final Long blogPostWriterId = 2L;
+        Account blogPostWriter = new Account("blogPostWriter", "blogPostWriter@test.com", "12345678");
+        ReflectionTestUtils.setField(blogPostWriter, "id", blogPostWriterId);
+
+        BlogPost blogPost = new BlogPost("testPost", "testContent", "introduction", false, blogPostWriter);
         ReflectionTestUtils.setField(blogPost, "id", blogPostId);
 
         final Long savedCommentId = -1L;
-        Comment savedComment = new Comment(content, writer, blogPost);
+        Comment savedComment = new Comment(content, commentWriter, blogPost);
         ReflectionTestUtils.setField(savedComment, "id", savedCommentId);
 
-        doReturn(Optional.of(writer))
+        doReturn(Optional.of(commentWriter))
                 .when(accountRepository)
-                .findById(writerId);
+                .findById(commentWriterId);
 
         doReturn(Optional.of(blogPost))
                 .when(blogPostRepository)
@@ -77,10 +81,10 @@ class CommentServiceTest {
                 .save(any(Comment.class));
 
         // when
-        Long result = target.createComment(writerId, blogPostId, content);
+        Comment createdComment = target.createComment(commentWriterId, blogPostId, content);
 
         // then
-        assertThat(result).isNotNull();
+        assertThat(createdComment.getId()).isNotNull();
     }
 
     @DisplayName("댓글 생성 실패: blogPostId에 해당하는 BlogPost 없음")
@@ -90,11 +94,11 @@ class CommentServiceTest {
         final Long invalidBlogPostId = -2L;
 
         Account writer = new Account("writerName", "writer@writer.com", "1234");
-        ReflectionTestUtils.setField(writer, "id", writerId);
+        ReflectionTestUtils.setField(writer, "id", commentWriterId);
 
         doReturn(Optional.of(writer))
                 .when(accountRepository)
-                .findById(writerId);
+                .findById(commentWriterId);
 
         doReturn(Optional.empty())
                 .when(blogPostRepository)
@@ -102,7 +106,7 @@ class CommentServiceTest {
 
         // when
         InvalidArgumentCommentCreationException result = catchThrowableOfType(
-                () -> target.createComment(writerId, invalidBlogPostId, content),
+                () -> target.createComment(commentWriterId, invalidBlogPostId, content),
                 InvalidArgumentCommentCreationException.class);
 
         // then

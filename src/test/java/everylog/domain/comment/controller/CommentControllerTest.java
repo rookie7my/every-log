@@ -103,16 +103,13 @@ class CommentControllerTest {
         CommentCreationRequestDto commentCreationRequestDto =
                 new CommentCreationRequestDto(blogPostId, content);
 
-        given(commentService.createComment(LOGIN_ACCOUNT_ID, blogPostId, content))
-                .willReturn(savedCommentId);
-
         Account commentWriter = new Account("test-user", "test@test.com", "12345678");
         Account blogWriter = new Account("blog-writer", "blog@blog.com", "12345678");
         BlogPost blogPost = new BlogPost("test", "test", "test", false, blogWriter);
         Comment savedComment = new Comment("test-content", commentWriter, blogPost);
         ReflectionTestUtils.setField(savedComment, "id", savedCommentId);
 
-        given(commentService.findById(savedCommentId))
+        given(commentService.createComment(LOGIN_ACCOUNT_ID, blogPostId, content))
                 .willReturn(savedComment);
 
         // when

@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static everylog.global.error.exception.ErrorResult.INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION;
 import static everylog.global.error.exception.ErrorResult.INVALID_WRITER_ID_FOR_COMMENT_CREATION;
 
@@ -25,7 +23,7 @@ public class CommentService {
     private final BlogPostRepository blogPostRepository;
 
     @Transactional
-    public Long createComment(Long writerId, Long blogPostId, String content) {
+    public Comment createComment(Long writerId, Long blogPostId, String content) {
         Account writer = accountRepository.findById(writerId)
                 .orElseThrow(() -> new InvalidArgumentCommentCreationException(INVALID_WRITER_ID_FOR_COMMENT_CREATION));
 
@@ -33,17 +31,6 @@ public class CommentService {
                 .orElseThrow(() -> new InvalidArgumentCommentCreationException(INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION));
 
         Comment comment = new Comment(content, writer, blogPost);
-        return commentRepository.save(comment).getId();
-    }
-
-    @Transactional(readOnly = true)
-    public Comment findById(Long id) {
-        return commentRepository.findByIdWithWriter(id)
-                .orElseThrow(() -> new IllegalArgumentException("id is not valid"));
-    }
-
-    @Transactional(readOnly = true)
-    public List<Comment> findAllByBlogPost(Long blogPostId) {
-        return commentRepository.findAllByBlogPost(blogPostId);
+        return commentRepository.save(comment);
     }
 }
