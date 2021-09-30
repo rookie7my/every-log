@@ -15,14 +15,14 @@ public class GlobalControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BlogPostNotFoundException.class)
-    public String BlogPostNotFoundExHandle(BlogPostNotFoundException e) {
+    public String handleBlogPostNotFoundException(BlogPostNotFoundException e) {
         log.error("BlogPostNotFoundException: {}", e.getErrorResult().getMessage());
         return "error/404";
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(AccountNotFoundException.class)
-    public String AccountNotFoundExHandle(AccountNotFoundException e) {
+    public String handleAccountNotFoundException(AccountNotFoundException e) {
         log.error("AccountNotFoundException: {}", e.getErrorResult().getMessage());
         return "error/404";
     }
