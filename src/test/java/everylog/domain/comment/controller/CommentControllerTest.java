@@ -3,6 +3,7 @@ package everylog.domain.comment.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import everylog.domain.account.domain.Account;
+import everylog.domain.account.exception.AccountNotFoundException;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.comment.domain.Comment;
 import everylog.domain.comment.service.CommentService;
@@ -32,7 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(CommentController.class)
 class CommentControllerTest {
 
-    public static final long LOGIN_ACCOUNT_ID = 2L;
+    public static final long CURRENT_ACCOUNT_ID = 2L;
+    public static final String CURRENT_ACCOUNT_USERNAME = "test-user";
+    public static final String CURRENT_ACCOUNT_PASSWORD = "12345678";
 
     @Autowired
     MockMvc mockMvc;
@@ -43,10 +46,42 @@ class CommentControllerTest {
     ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
 
+    @DisplayName("댓글 생성 실패: commentService 가 BusinessException 을 던지는 경우")
+    @Test
+    @WithMockAccountUserDetails(id = CURRENT_ACCOUNT_ID)
+    void commentServiceThrowsBusinessExceptionThenCommentCreationFail() throws Exception {
+        // given
+        final String url = "/api/comments";
+        final Long blogPostId = 1L;
+        final String commentContent = "test-content";
+        CommentCreationRequestDto commentCreationRequestDto = new CommentCreationRequestDto(blogPostId, commentContent);
+
+        given(commentService.createComment(CURRENT_ACCOUNT_ID, blogPostId, commentContent))
+                .willThrow(new AccountNotFoundException(ErrorResult.INVALID_CURRENT_ACCOUNT_ID));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(commentCreationRequestDto))
+                .with(csrf()));
+
+        // then
+        resultActions.andExpect(status().is(ErrorResult.INVALID_CURRENT_ACCOUNT_ID.getHttpStatus().value()));
+
+        String responseBody = resultActions.andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+        ErrorResponse errorResponse = objectMapper.readValue(responseBody, ErrorResponse.class);
+        assertThat(errorResponse.getErrorCode()).isEqualTo(ErrorResult.INVALID_CURRENT_ACCOUNT_ID.getErrorCode());
+        assertThat(errorResponse.getMessage()).isEqualTo(ErrorResult.INVALID_CURRENT_ACCOUNT_ID.getMessage());
+        assertThat(errorResponse.getErrors()).isEmpty();
+    }
+
     @DisplayName("댓글 생성 실패: blogPostId가 Null")
     @Test
     @WithMockAccountUserDetails
-    void BlogPostIdIsNullThenCommentCreationFail() throws Exception {
+    void blogPostIdIsNullThenCommentCreationFail() throws Exception {
         // given
         final String url = "/api/comments";
         CommentCreationRequestDto commentCreationRequestDto =
@@ -78,7 +113,7 @@ class CommentControllerTest {
     @DisplayName("댓글 생성 실패: 빈 댓글 내용")
     @Test
     @WithMockAccountUserDetails
-    void EmptyContentThenCommentCreationFail() throws Exception {
+    void emptyContentThenCommentCreationFail() throws Exception {
         // given
         final String url = "/api/comments";
         CommentCreationRequestDto commentCreationRequestDto =
@@ -128,25 +163,26 @@ class CommentControllerTest {
 
     @DisplayName("댓글 생성 성공")
     @Test
-    @WithMockAccountUserDetails(id = LOGIN_ACCOUNT_ID)
-    void CommentCreationSuccess() throws Exception {
+    @WithMockAccountUserDetails(id = CURRENT_ACCOUNT_ID,
+            username = CURRENT_ACCOUNT_USERNAME,
+            password = CURRENT_ACCOUNT_PASSWORD)
+    void commentCreationSuccess() throws Exception {
         // given
         final String url = "/api/comments";
         final Long blogPostId = 1L;
         final String commentContent = "test-content";
         final Long savedCommentId = 1L;
-        final String commentWriterName = "commentWriter";
 
         CommentCreationRequestDto commentCreationRequestDto =
                 new CommentCreationRequestDto(blogPostId, commentContent);
 
-        Account commentWriter = new Account(commentWriterName, "test@test.com", "12345678");
+        Account currentAccount = new Account(CURRENT_ACCOUNT_USERNAME, "test@test.com", CURRENT_ACCOUNT_PASSWORD);
         Account blogWriter = new Account("blog-writer", "blog@blog.com", "12345678");
         BlogPost blogPost = new BlogPost("test", "test", "test", false, blogWriter);
-        Comment savedComment = new Comment(commentContent, commentWriter, blogPost);
+        Comment savedComment = new Comment(commentContent, currentAccount, blogPost);
         ReflectionTestUtils.setField(savedComment, "id", savedCommentId);
 
-        given(commentService.createComment(LOGIN_ACCOUNT_ID, blogPostId, commentContent))
+        given(commentService.createComment(CURRENT_ACCOUNT_ID, blogPostId, commentContent))
                 .willReturn(savedComment);
 
         // when
@@ -164,6 +200,6 @@ class CommentControllerTest {
 
         CommentCreationResponseDto result = objectMapper.readValue(responseBody, CommentCreationResponseDto.class);
         assertThat(result.getContent()).isEqualTo(commentContent);
-        assertThat(result.getWriterName()).isEqualTo(commentWriterName);
+        assertThat(result.getWriterName()).isEqualTo(CURRENT_ACCOUNT_USERNAME);
     }
 }

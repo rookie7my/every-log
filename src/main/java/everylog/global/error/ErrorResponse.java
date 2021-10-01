@@ -10,6 +10,8 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
@@ -24,5 +26,9 @@ public class ErrorResponse {
                 .map(FieldError::from)
                 .collect(Collectors.toList());
         return new ErrorResponse(errorResult.getErrorCode(), errorResult.getMessage(), errors);
+    }
+
+    public static ErrorResponse from(ErrorResult errorResult) {
+        return new ErrorResponse(errorResult.getErrorCode(), errorResult.getMessage(), emptyList());
     }
 }

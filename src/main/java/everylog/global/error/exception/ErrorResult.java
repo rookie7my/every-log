@@ -13,9 +13,7 @@ public enum ErrorResult {
 
     INVALID_INPUT_VALUE(BAD_REQUEST, COMMON_1, "invalid input value"),
 
-    INVALID_WRITER_ID_FOR_COMMENT_CREATION(BAD_REQUEST, COMMENT_1,
-            "when creating comment, writer with given writerId does not exist"),
-    INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION(BAD_REQUEST, COMMENT_2,
+    INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION(BAD_REQUEST, COMMENT_1,
             "when creating comment, blogPost with given blogPostId does not exist"),
 
     ACCOUNT_NOT_FOUND(NOT_FOUND, ACCOUNT_1,"Requested account can not be found"),

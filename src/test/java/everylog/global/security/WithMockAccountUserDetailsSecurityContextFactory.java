@@ -15,7 +15,10 @@ public class WithMockAccountUserDetailsSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockAccountUserDetails withMockAccountUserDetails) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        Account account = new Account("test-user", "test@test.com", "12345678");
+        Account account =
+                new Account(withMockAccountUserDetails.username(),
+                "test@test.com",
+                withMockAccountUserDetails.password());
         ReflectionTestUtils.setField(account, "id", withMockAccountUserDetails.id());
         AccountUserDetails principal = new AccountUserDetails(account);
 

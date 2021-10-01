@@ -1,6 +1,7 @@
 package everylog.domain.comment.service;
 
 import everylog.domain.account.domain.Account;
+import everylog.domain.account.exception.AccountNotFoundException;
 import everylog.domain.account.repository.AccountRepository;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.blogpost.repository.BlogPostRepository;
@@ -39,23 +40,23 @@ class CommentServiceTest {
     @Mock
     CommentRepository commentRepository;
 
-    Long commentWriterId;
+    Long currentAccountId;
     Long blogPostId;
     String content;
 
     @BeforeEach
     void init() {
-        commentWriterId = 1L;
+        currentAccountId = 1L;
         blogPostId = 1L;
         content = "test content";
     }
 
     @DisplayName("댓글 생성 성공")
     @Test
-    void CommentCreationSuccess() {
+    void commentCreationSuccess() {
         // given
         Account commentWriter = new Account("commentWriter", "commentWriter@test.com", "12345678");
-        ReflectionTestUtils.setField(commentWriter, "id", commentWriterId);
+        ReflectionTestUtils.setField(commentWriter, "id", currentAccountId);
 
         final Long blogPostWriterId = 2L;
         Account blogPostWriter = new Account("blogPostWriter", "blogPostWriter@test.com", "12345678");
@@ -70,7 +71,7 @@ class CommentServiceTest {
 
         doReturn(Optional.of(commentWriter))
                 .when(accountRepository)
-                .findById(commentWriterId);
+                .findById(currentAccountId);
 
         doReturn(Optional.of(blogPost))
                 .when(blogPostRepository)
@@ -81,7 +82,7 @@ class CommentServiceTest {
                 .save(any(Comment.class));
 
         // when
-        Comment createdComment = target.createComment(commentWriterId, blogPostId, content);
+        Comment createdComment = target.createComment(currentAccountId, blogPostId, content);
 
         // then
         assertThat(createdComment.getId()).isNotNull();
@@ -94,11 +95,11 @@ class CommentServiceTest {
         final Long invalidBlogPostId = -2L;
 
         Account writer = new Account("writerName", "writer@writer.com", "1234");
-        ReflectionTestUtils.setField(writer, "id", commentWriterId);
+        ReflectionTestUtils.setField(writer, "id", currentAccountId);
 
         doReturn(Optional.of(writer))
                 .when(accountRepository)
-                .findById(commentWriterId);
+                .findById(currentAccountId);
 
         doReturn(Optional.empty())
                 .when(blogPostRepository)
@@ -106,28 +107,28 @@ class CommentServiceTest {
 
         // when
         InvalidArgumentCommentCreationException result = catchThrowableOfType(
-                () -> target.createComment(commentWriterId, invalidBlogPostId, content),
+                () -> target.createComment(currentAccountId, invalidBlogPostId, content),
                 InvalidArgumentCommentCreationException.class);
 
         // then
         assertThat(result.getErrorResult()).isEqualTo(ErrorResult.INVALID_BLOG_POST_ID_FOR_COMMENT_CREATION);
     }
 
-    @DisplayName("댓글 생성 실패: writerId에 해당하는 Account 없음")
+    @DisplayName("댓글 생성 실패: currentAccountId에 해당하는 Account 없음")
     @Test
-    void writerIdInputInValidThenCommentCreationFail() {
+    void invalidCurrentAccountIdThenCommentCreationFail() {
         // given
-        final Long inValidWriterId = -2L;
+        final Long invalidCurrentAccountId = -2L;
         doReturn(Optional.empty())
                 .when(accountRepository)
-                .findById(inValidWriterId);
+                .findById(invalidCurrentAccountId);
 
         // when
-        InvalidArgumentCommentCreationException result = catchThrowableOfType(
-                () -> target.createComment(inValidWriterId, blogPostId, content),
-                InvalidArgumentCommentCreationException.class);
+        AccountNotFoundException result =
+                catchThrowableOfType(() -> target.createComment(invalidCurrentAccountId, blogPostId, content),
+                        AccountNotFoundException.class);
 
         // then
-        assertThat(result.getErrorResult()).isEqualTo(ErrorResult.INVALID_WRITER_ID_FOR_COMMENT_CREATION);
+        assertThat(result.getErrorResult()).isEqualTo(ErrorResult.INVALID_CURRENT_ACCOUNT_ID);
     }
 }
