@@ -100,7 +100,7 @@
     xhr.onreadystatechange = function() {
       if(xhr.readyState !== XMLHttpRequest.DONE) return;
 
-      if(xhr.status === 200) {
+      if(xhr.status === 200 || xhr.status === 201) {
         onSuccess(xhr);
         console.log(xhr.responseText);
       } else {

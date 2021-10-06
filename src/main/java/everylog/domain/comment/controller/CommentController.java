@@ -32,7 +32,7 @@ public class CommentController {
         Comment createdComment = commentService.createComment(currentAccountId,
                 commentCreationRequestDto.getBlogPostId(),
                 commentCreationRequestDto.getContent());
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.created(URI.create("/api/comments" + "/" + createdComment.getId()))
                 .body(new CommentCreationResponseDto(createdComment));
     }
 }
