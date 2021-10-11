@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
@@ -143,22 +144,25 @@ class CommentControllerTest {
         assertThat(fieldError.getRejectedValue()).isEqualTo("");
     }
 
-    @DisplayName("로그인 페이지로 리다이렉트: 로그인 안한 사용자가 댓글 생성 요청")
+    @DisplayName("댓글 생성 실패: 로그인 안한 유저가 요청")
     @Test
-    void userNotLoggedInThenRedirectLoginPage() throws Exception {
+    void userNotLoggedInThenCommentCreationFail() throws Exception {
         // given
         final String url = "/api/comments";
-        CommentCreationRequestDto commentCreationRequestDto =
-                new CommentCreationRequestDto(1L, "test-content");
+        final Long blogPostId = 1L;
+        final String commentContent = "test-content";
+        CommentCreationRequestDto commentCreationRequestDto = new CommentCreationRequestDto(blogPostId, commentContent);
 
         // when
         ResultActions resultActions = mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(commentCreationRequestDto))
-                .with(csrf()));
+                .with(csrf())
+        );
 
         // then
-        resultActions.andExpect(status().isSeeOther());
+        resultActions.andExpect(status().isUnauthorized())
+                .andExpect(header().string("WWW-Authenticate", "formBased"));
     }
 
     @DisplayName("댓글 생성 성공")
