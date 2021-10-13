@@ -6,6 +6,7 @@ import everylog.domain.account.domain.Account;
 import everylog.domain.account.exception.AccountNotFoundException;
 import everylog.domain.blogpost.domain.BlogPost;
 import everylog.domain.comment.domain.Comment;
+import everylog.domain.comment.repository.CommentRepository;
 import everylog.domain.comment.service.CommentService;
 import everylog.global.error.ErrorResponse;
 import everylog.global.error.FieldError;
@@ -23,10 +24,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,8 +47,62 @@ class CommentControllerTest {
     @MockBean
     CommentService commentService;
 
+    @MockBean
+    CommentRepository commentRepository;
+
     ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
+
+    @DisplayName("댓글 조회 실패: blogPostId 파라미터 없음")
+    @Test
+    void searchForCommentsWithoutBlogPostIdThenFail() throws Exception {
+        // given
+        final String url = "/api/comments";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("댓글 조회 성공")
+    @Test
+    void searchForCommentsWithBlogPostIdThenReturnResults() throws Exception {
+        // given
+        final String url = "/api/comments";
+        final Long blogPostId = 1L;
+
+        final Account writer1 = new Account("writer1", "writer1@writer1.com", "12345678");
+        final Account writer2 = new Account("writer2", "writer2@writer2.com", "12345678");
+        final Account writer = new Account("writer", "writer@writer.com", "12345678");
+
+        final BlogPost blogPost =
+                new BlogPost("title", "content", "introduction", false, writer);
+        ReflectionTestUtils.setField(blogPost, "id", blogPostId);
+
+        final Comment comment1 = new Comment("commentContent1", writer1, blogPost);
+        final Comment comment2 = new Comment("commentContent2", writer2, blogPost);
+        final List<Comment> results = List.of(comment1, comment2);
+
+        given(commentRepository.findAllByBlogPostId(blogPostId))
+                .willReturn(results);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("blogPostId", String.valueOf(blogPostId)));
+
+        // then
+        resultActions.andExpect(status().isOk());
+        String responseBody = resultActions.andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        CommentQueryResponseDto commentQueryResponseDto =
+                objectMapper.readValue(responseBody, CommentQueryResponseDto.class);
+
+        assertThat(commentQueryResponseDto.getCount()).isEqualTo(results.size());
+    }
 
     @DisplayName("댓글 생성 실패: commentService 가 BusinessException 을 던지는 경우")
     @Test
