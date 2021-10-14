@@ -5,10 +5,8 @@ import everylog.global.error.exception.ErrorResult;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.BindingResult;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 
@@ -18,14 +16,10 @@ import static java.util.Collections.emptyList;
 public class ErrorResponse {
     private final ErrorCode errorCode;
     private final String message;
-    private final List<FieldError> errors;
+    private final List<FieldErrorDto> errors;
 
-    public static ErrorResponse of(ErrorResult errorResult, BindingResult bindingResult) {
-        List<FieldError> errors = bindingResult.getFieldErrors()
-                .stream()
-                .map(FieldError::from)
-                .collect(Collectors.toList());
-        return new ErrorResponse(errorResult.getErrorCode(), errorResult.getMessage(), errors);
+    public static ErrorResponse of(ErrorResult errorResult, List<FieldErrorDto> fieldErrorDtos) {
+        return new ErrorResponse(errorResult.getErrorCode(), errorResult.getMessage(), fieldErrorDtos);
     }
 
     public static ErrorResponse from(ErrorResult errorResult) {

@@ -9,7 +9,7 @@ import everylog.domain.comment.domain.Comment;
 import everylog.domain.comment.repository.CommentRepository;
 import everylog.domain.comment.service.CommentService;
 import everylog.global.error.ErrorResponse;
-import everylog.global.error.FieldError;
+import everylog.global.error.FieldErrorDto;
 import everylog.global.error.exception.ErrorCode;
 import everylog.global.error.exception.ErrorResult;
 import everylog.global.security.WithMockAccountUserDetails;
@@ -163,9 +163,9 @@ class CommentControllerTest {
         assertThat(errorResponse.getMessage()).isEqualTo(ErrorResult.INVALID_INPUT_VALUE.getMessage());
         assertThat(errorResponse.getErrors().size()).isEqualTo(1);
 
-        FieldError fieldError = errorResponse.getErrors().get(0);
-        assertThat(fieldError.getField()).isEqualTo("blogPostId");
-        assertThat(fieldError.getRejectedValue()).isEqualTo("");
+        FieldErrorDto fieldErrorDto = errorResponse.getErrors().get(0);
+        assertThat(fieldErrorDto.getField()).isEqualTo("blogPostId");
+        assertThat(fieldErrorDto.getRejectedValue()).isEqualTo("");
     }
 
     @DisplayName("댓글 생성 실패: 빈 댓글 내용")
@@ -196,9 +196,9 @@ class CommentControllerTest {
         assertThat(errorResponse.getMessage()).isEqualTo(ErrorResult.INVALID_INPUT_VALUE.getMessage());
         assertThat(errorResponse.getErrors().size()).isEqualTo(1);
 
-        FieldError fieldError = errorResponse.getErrors().get(0);
-        assertThat(fieldError.getField()).isEqualTo("content");
-        assertThat(fieldError.getRejectedValue()).isEqualTo("");
+        FieldErrorDto fieldErrorDto = errorResponse.getErrors().get(0);
+        assertThat(fieldErrorDto.getField()).isEqualTo("content");
+        assertThat(fieldErrorDto.getRejectedValue()).isEqualTo("");
     }
 
     @DisplayName("댓글 생성 실패: 로그인 안한 유저가 요청")
