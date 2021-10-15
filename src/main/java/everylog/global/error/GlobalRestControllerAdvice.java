@@ -43,9 +43,7 @@ public class GlobalRestControllerAdvice {
     private List<FieldErrorDto> getFieldErrorDtos(List<FieldError> fieldErrors) {
         List<FieldErrorDto> fieldErrorDtos = new ArrayList<>();
         for (FieldError fieldError : fieldErrors) {
-            String code = fieldError.getCode();
-            String message = messageSource.getMessage(code, null, fieldError.getDefaultMessage(), null);
-
+            String message = messageSource.getMessage(fieldError, null);
             String rejectedValue = "";
             if(fieldError.getRejectedValue() != null){
                 rejectedValue = fieldError.getRejectedValue().toString();
