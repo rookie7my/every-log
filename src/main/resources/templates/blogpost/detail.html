@@ -74,6 +74,23 @@
 
   </template>
 
+  <div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{label.notification}">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{button.close}">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 <script src="/webjars/momentjs/moment.js"></script>
 <script src="/webjars/showdown/dist/showdown.min.js"></script>
@@ -93,19 +110,12 @@
     sendCommentCreationRequest($commentTextArea.value);
   })
 
-
-  function sendRequest(data, method, url, onSuccess) {
+  function sendRequest(data, method, url, callback) {
     const xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function() {
       if(xhr.readyState !== XMLHttpRequest.DONE) return;
-
-      if(xhr.status === 200 || xhr.status === 201) {
-        onSuccess(xhr);
-        console.log(xhr.responseText);
-      } else {
-        console.error(xhr.responseText);
-      }
+      callback(xhr);
     };
 
     const csrfToken = /*[[${_csrf.token}]]*/ null;
@@ -122,19 +132,40 @@
       "blogPostId": /*[[${blogPost.id}]]*/ "1",
       "content": content
     };
-    sendRequest(data, 'POST', '/api/comments', (xhr) => {
-      resetCommentContentOfTextArea();
-      const comment = JSON.parse(xhr.responseText);
-      addCommentToCommentList(comment);
+    sendRequest(data, 'POST', '/api/comments', xhr => {
+      if (xhr.status === 201) {
+        resetCommentContentOfTextArea();
+        const comment = JSON.parse(xhr.responseText);
+        addCommentToCommentList(comment);
+      } else if(xhr.status === 400) {
+        const errorResult = JSON.parse(xhr.responseText);
+        const $modal = document.querySelector('.modal');
+        const $modalBody = document.querySelector('.modal-body');
+        let message = '';
+        if(errorResult.errorCode === 'COMMON_1') {
+          for(let fieldError of errorResult.errors) {
+            message += fieldError.reason;
+            message += '\n';
+          }
+        }
+        $modalBody.innerText = message;
+        const modal = new bootstrap.Modal($modal, {});
+        modal.show();
+      } else if(xhr.status === 401) {
+        window.location = '/login';
+      }
     });
   }
 
   function sendCommentsQueryRequest() {
     const blogPostId = /*[[${blogPost.id}]]*/ "1";
     const url = `/api/comments?blogPostId=${blogPostId}`;
-    sendRequest({}, 'GET', url, (xhr) => {
-      const commentQueryResponse = JSON.parse(xhr.responseText);
-      renderCommentList(commentQueryResponse.comments);
+    sendRequest({}, 'GET', url, xhr => {
+      if(xhr.status === 200) {
+        removeAllCommentsFromCommentList();
+        const commentsQueryResponse = JSON.parse(xhr.responseText);
+        renderCommentList(commentsQueryResponse.comments);
+      }
     });
   }
 
@@ -157,6 +188,13 @@
   function renderCommentList(comments) {
     for (const comment of comments) {
       addCommentToCommentList(comment);
+    }
+  }
+
+  function removeAllCommentsFromCommentList() {
+    const $commentList = document.querySelector('#commentList');
+    while($commentList.firstChild) {
+      $commentList.removeChild($commentList.firstChild);
     }
   }
 </script>
